@@ -17,7 +17,6 @@ import {
   setAuthToken,
   uploadToPresignedUrl,
   type Brand,
-  type CreateOrderPayload,
 } from "../_lib/api";
 import { config } from "../_lib/config";
 import { clearAuth, getStoredToken, getStoredUser, saveAuth, type AuthUser } from "../_lib/auth";
@@ -158,7 +157,6 @@ export default function CheckoutPage() {
   const currentFlowIndex = flowSteps.findIndex((item) => item.key === step);
   const brandName = selectedBrand?.name || customBrand;
   const selectedPrice = priceText(selectedBrand?.price);
-  const selectedAmount = priceAmount(selectedBrand?.price);
   const checkoutStarted = Boolean(token && (selectedBrand || customBrand || selectedCategory || nfcMode || Object.values(photos).some(Boolean) || requestId));
 
   const requiredPhotosReady = useMemo(
@@ -327,36 +325,13 @@ export default function CheckoutPage() {
     setError("Payment is unavailable right now.");
   }, []);
 
-  const buildCreateOrderPayload = useCallback(
-    (withApprovalUrls: boolean): CreateOrderPayload => {
-      if (!brandName || !requestId) throw new Error("Missing checkout request.");
-      const base: CreateOrderPayload = {
-        amount: selectedAmount,
-        currency: "USD",
-        referenceId: requestId,
-        itemName: `${brandName} Authentication`,
-        itemDescription: `ModaCert authentication service for ${brandName}`,
-        itemQuantity: 1,
-        itemPrice: selectedAmount,
-      };
-      if (!withApprovalUrls) return base;
-      const origin = typeof window !== "undefined" ? window.location.origin : undefined;
-      return {
-        ...base,
-        returnUrl: origin ? `${origin}/checkout` : undefined,
-        cancelUrl: origin ? `${origin}/checkout` : undefined,
-      };
-    },
-    [brandName, requestId, selectedAmount],
-  );
-
   async function handleFakePayment() {
     if (!brandName || !requestId) return;
     setLoading(true);
     setError("");
     setServiceError(null);
     try {
-      const order = await createPayPalOrder(buildCreateOrderPayload(false));
+      const order = await createPayPalOrder({ referenceId: requestId });
       await capturePayPalOrder({ orderId: order.orderId, referenceId: requestId });
       goTo("done");
     } catch {
@@ -370,9 +345,9 @@ export default function CheckoutPage() {
     if (!brandName || !requestId) throw new Error("Missing checkout request.");
     setError("");
     setServiceError(null);
-    const order = await createPayPalOrder(buildCreateOrderPayload(true));
+    const order = await createPayPalOrder({ referenceId: requestId });
     return order.orderId;
-  }, [brandName, requestId, buildCreateOrderPayload]);
+  }, [brandName, requestId]);
 
   const handlePayPalApprove = useCallback(
     async (data: { orderID: string }) => {

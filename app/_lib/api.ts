@@ -311,15 +311,7 @@ export interface CreateOrderResponse {
 }
 
 export interface CreateOrderPayload {
-  amount: string;
-  currency?: string;
   referenceId: string;
-  itemName?: string;
-  itemDescription?: string;
-  itemQuantity?: number;
-  itemPrice?: string;
-  returnUrl?: string;
-  cancelUrl?: string;
 }
 
 export async function createPayPalOrder(
