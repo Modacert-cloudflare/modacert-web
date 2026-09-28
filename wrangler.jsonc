@@ -13,5 +13,41 @@
       "binding": "WORKER_SELF_REFERENCE",
       "service": "modacert-web"
     }
-  ]
+  ],
+  "env": {
+    "dev": {
+      "name": "modacert-web-dev",
+      "account_id": "8c5b416b7ebd85670bb9941a084efea6",
+      "compatibility_date": "2026-09-28",
+      "workers_dev": true,
+      "routes": [],
+      "assets": {
+        "directory": ".open-next/assets",
+        "binding": "ASSETS"
+      },
+      "services": [
+        {
+          "binding": "WORKER_SELF_REFERENCE",
+          "service": "modacert-web-dev"
+        }
+      ],
+      "vars": {
+        "NEXT_PUBLIC_API_MODE": "proxy",
+        "NEXT_PUBLIC_USER_SERVICE_URL": "https://modacert-user-service-dev.firman-lasaman.workers.dev",
+        "NEXT_PUBLIC_PAYMENT_SERVICE_URL": "https://modacert-payment-service-dev.firman-lasaman.workers.dev",
+        "NEXT_PUBLIC_PAYMENT_MODE": "fake",
+        "NEXT_PUBLIC_PAYPAL_CLIENT_ID": "",
+        "NEXT_PUBLIC_API_TIMEOUT_MS": "10000",
+        "NEXT_PUBLIC_API_RETRY_ATTEMPTS": "3",
+        "NEXT_PUBLIC_API_RETRY_DELAY_MS": "1000",
+        "USER_SERVICE_ORIGIN": "https://modacert-user-service-dev.firman-lasaman.workers.dev",
+        "PAYMENT_SERVICE_ORIGIN": "https://modacert-payment-service-dev.firman-lasaman.workers.dev"
+      },
+      "observability": {
+        "enabled": true,
+        "logs": { "enabled": true, "head_sampling_rate": 1 },
+        "traces": { "enabled": true, "head_sampling_rate": 0.01 }
+      }
+    }
+  }
 }
