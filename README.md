@@ -36,6 +36,24 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 # modacert-web
 
+## Checkout payment modes
+
+Copy `.env.example` to `.env.local` for local fake checkout, then run `npm run dev`. The example uses the DEV gateway through the same-origin API proxy. Local configuration is currently set to fake.
+
+| `NEXT_PUBLIC_PAYMENT_MODE` | Checkout | Required payment backend |
+|---|---|---|
+| `production` | PayPal with a live client ID | `PAYMENT_MODE=paypal`, live credentials, `PAYPAL_BASE_URL=https://api-m.paypal.com` |
+| `sandbox` | PayPal with a sandbox client ID | `PAYMENT_MODE=paypal`, sandbox credentials, `PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com` |
+| `fake` | One click on **Test Pay**, no charge | `PAYMENT_MODE=fake`; no PayPal credentials |
+
+Fake payment uses the existing create-order and capture endpoints. The backend records a completed payment and queues `payment.completed` for processing. Checkout advances to Success only when capture returns `status: "COMPLETED"` and `queued: true`; failures remain at Payment. Login, brand selection, and uploads still use the backend.
+
+For production or sandbox, set `NEXT_PUBLIC_PAYPAL_CLIENT_ID` to the matching public client ID and configure both service URLs for that environment. In proxy mode, also set `USER_SERVICE_ORIGIN` and `PAYMENT_SERVICE_ORIGIN`. Keep `PAYPAL_CLIENT_SECRET` only in the payment backend. Selecting a frontend mode does not reconfigure the backend; the DEV gateway is configured for fake payments.
+
+An omitted mode defaults to `production`. Legacy `paypal` retains the existing PayPal checkout behavior; all other values are rejected. Restart local development after env changes and rebuild before deployment: `NEXT_PUBLIC_*` values are frozen into the browser bundle at build time. `.env.local` also overrides `.env.production` during local builds; use explicit matching build variables for a production or sandbox build.
+
+Run the payment regression check with `npm run test:payment`.
+
 ## Cloudflare DEV deployment
 
 DEV site: https://modacert-web-dev.firman-lasaman.workers.dev
@@ -44,19 +62,9 @@ This separate Worker uses the Cloudflare DEV backend. Existing default deploymen
 
 ### Local build and deploy
 
-Use Node.js 22 and install the locked dependencies with `npm ci`. Export the DEV variables before building: `--env dev` selects Wrangler configuration, while Next.js freezes public variables at build time.
+Use Node.js 22 and install the locked dependencies with `npm ci`. `build:dev` sets the browser bundle to direct API calls against the DEV gateway with fake payments. `--env dev` selects the matching Wrangler configuration.
 
 ```bash
-export NEXT_PUBLIC_API_MODE=proxy
-export NEXT_PUBLIC_USER_SERVICE_URL=https://modacert-user-service-dev.firman-lasaman.workers.dev
-export NEXT_PUBLIC_PAYMENT_SERVICE_URL=https://modacert-payment-service-dev.firman-lasaman.workers.dev
-export NEXT_PUBLIC_PAYMENT_MODE=fake
-export NEXT_PUBLIC_PAYPAL_CLIENT_ID=''
-export NEXT_PUBLIC_API_TIMEOUT_MS=10000
-export NEXT_PUBLIC_API_RETRY_ATTEMPTS=3
-export NEXT_PUBLIC_API_RETRY_DELAY_MS=1000
-export USER_SERVICE_ORIGIN=https://modacert-user-service-dev.firman-lasaman.workers.dev
-export PAYMENT_SERVICE_ORIGIN=https://modacert-payment-service-dev.firman-lasaman.workers.dev
 npm run build:dev
 npm run deploy:dev
 ```

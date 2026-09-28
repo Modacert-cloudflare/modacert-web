@@ -752,7 +752,7 @@ function PaymentStep({ brandName, requestId, amount, loading, onBack, onFakePaym
           <div className="relative max-w-sm">
             <p className="font-auth text-xl text-mc-orange">{brandName}</p>
             <h2 className="mt-3 font-auth text-5xl leading-none">Payment Details</h2>
-            <p className="mt-4 text-sm leading-6 text-white/72">{PAYMENT_MODE === "fake" ? "Use test payment to complete your authentication request while PayPal is unavailable." : "Choose an available payment method to complete your authentication request."}</p>
+            <p className="mt-4 text-sm leading-6 text-white/72">{PAYMENT_MODE === "fake" ? "Complete a simulated payment to submit your item for expert review. You will not be charged." : "Choose an available payment method to complete your authentication request."}</p>
           </div>
         </div>
         <div className="self-center p-5 lg:p-8">

@@ -12,7 +12,8 @@
     "deploy": "npm run build && opennextjs-cloudflare deploy",
     "deploy:cf": "npm run deploy",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:payment": "node --test tests/payment.test.mjs"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^9.1.1",

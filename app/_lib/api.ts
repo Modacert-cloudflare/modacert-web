@@ -335,6 +335,8 @@ export async function capturePayPalOrder(payload: {
     payload
   );
   if (!data?.success) throw new Error(data?.error?.message || "Capture failed");
+  if (data.data?.status !== "COMPLETED") throw new Error("Payment is not completed");
+  if (data.data.queued !== true) throw new Error("Payment could not be queued for expert review");
   return data.data;
 }
 
