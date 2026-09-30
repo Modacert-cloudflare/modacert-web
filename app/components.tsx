@@ -20,15 +20,15 @@ export function SiteHeader() {
     <header className="relative z-30 border-b border-mc-muted bg-white">
       <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <BrandMark />
-        <nav aria-label="Main navigation" className="hidden items-center gap-7 text-sm md:flex">
-          {navItems.map((item) => <Link key={item.href} href={item.href} className="py-3 text-mc-ink hover:text-mc-orange-dark">{item.label}</Link>)}
+        <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm lg:flex">
+          {navItems.map((item) => <Link key={item.href} href={item.href} className="inline-flex min-h-11 min-w-11 items-center py-3 text-mc-ink hover:text-mc-orange-dark">{item.label}</Link>)}
           {trustProof.verificationUrl ? <a href={trustProof.verificationUrl} className="py-3 hover:text-mc-orange-dark">Verify certificate</a> : null}
         </nav>
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="hidden items-center gap-4 lg:flex">
           <Link href="/signin" className="inline-flex min-h-11 items-center px-2 text-sm font-medium">Sign in</Link>
           <ButtonLink href="/checkout">Authenticate an item</ButtonLink>
         </div>
-        <details className="group relative md:hidden">
+        <details className="group relative lg:hidden">
           <summary className="flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-md border border-mc-muted px-3 text-sm font-semibold [&::-webkit-details-marker]:hidden">Menu</summary>
           <nav aria-label="Mobile navigation" className="absolute right-0 top-[calc(100%+8px)] z-40 flex w-[min(18rem,calc(100vw-2rem))] flex-col gap-1 rounded-lg border border-mc-muted bg-white p-3 shadow-sm">
             {navItems.map((item) => <Link key={item.href} href={item.href} className="flex min-h-11 items-center rounded-md px-3 text-sm">{item.label}</Link>)}
@@ -58,7 +58,9 @@ export function Footer() {
         <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-x-8 gap-y-0 text-sm sm:grid-cols-3 [&>a]:flex [&>a]:min-h-11 [&>a]:items-center">
           <Link href="/checkout">Authenticate</Link>
           <Link href="/rates">Pricing</Link>
+          <Link href="/brands">Brands</Link>
           <Link href="/#how-it-works">How it works</Link>
+          <Link href="/upload">Photo guide</Link>
           <Link href="/signin">Sign in</Link>
           {trustProof.verificationUrl ? <a href={trustProof.verificationUrl}>Verify certificate</a> : null}
           <a href="mailto:modacert.support@gmail.com">Contact</a>

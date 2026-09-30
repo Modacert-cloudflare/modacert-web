@@ -37,12 +37,12 @@ export function BrandDirectory({ compact = false }: { compact?: boolean }) {
       {!loading && !error && visible.length > 0 ? (
         <ul className="mt-5 grid gap-x-8 sm:grid-cols-2">
           {visible.map((brand) => <li key={brand.id} className="flex min-h-16 items-center justify-between gap-3 border-b border-mc-muted py-2">
-            <div><span className="block font-semibold">{brand.name}</span><span className="text-sm text-mc-form-muted">{formattedPrice(brand.price) ? `From ${formattedPrice(brand.price)}` : "Price at checkout"}</span></div>
+            <div><span className="block font-semibold">{brand.name}</span><span className="text-sm text-mc-form-muted">{formattedPrice(brand.price) ?? "Price at checkout"}</span></div>
             <Link href={`/checkout?brand=${encodeURIComponent(brand.id)}`} className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-semibold text-mc-orange-dark underline underline-offset-4" aria-label={`Authenticate a ${brand.name} item`}>Choose</Link>
           </li>)}
         </ul>
       ) : null}
-      {compact && !loading && !error && filtered.length > visible.length ? <Link href="/rates" className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">View all brands and prices</Link> : null}
+      {compact && !loading && !error && filtered.length > visible.length ? <Link href="/brands" className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">View all brands and prices</Link> : null}
     </div>
   );
 }

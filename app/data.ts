@@ -33,6 +33,7 @@ export const figma = {
 export const navItems = [
   { label: "Authenticate", href: "/checkout" },
   { label: "Pricing", href: "/rates" },
+  { label: "Brands", href: "/brands" },
   { label: "How it works", href: "/#how-it-works" },
 ] as const;
 
