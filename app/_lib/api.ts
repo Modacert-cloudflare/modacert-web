@@ -259,6 +259,8 @@ export async function fetchBrandModels(brandId: string): Promise<Model[]> {
 
 export interface PresignResponse {
   requestId: string;
+  price?: number | string;
+  currency?: string;
   uploadUrls: Array<{ photoType: string; uploadUrl: string; key: string }>;
 }
 
@@ -298,7 +300,7 @@ export async function uploadToPresignedUrl(
 export async function confirmUpload(
   requestId: string,
   uploadedKeys?: Record<string, string>
-): Promise<{ status: string }> {
+): Promise<{ status: string; price?: number | string; currency?: string }> {
   const { data } = await userApi.post(config.endpoints.upload.confirm, { requestId, uploadedKeys });
   if (!data?.success) throw new Error(data?.error?.message || "Confirm failed");
   return data.data;

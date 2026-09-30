@@ -2,7 +2,6 @@
 
 import { FormEvent, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { getGoogleAuthUrl, register } from "../_lib/api";
@@ -105,11 +104,11 @@ export default function SignUpPage() {
   }
 
   return (
-    <AuthShell switchHref="/signin" switchLabel="Sign in" imageHeight="min-h-[820px]">
+    <AuthShell switchHref="/signin" switchLabel="Sign in">
       <form onSubmit={handleSubmit} className="relative z-10 w-full max-w-[430px]">
-        <AuthHeading title="Sign up" description="Please enter your details to sign up" />
+        <AuthHeading title="Create an account" description="Keep your authentication requests in one place." />
         <GoogleButton className="mt-5" onClick={handleGoogleAuth} loading={googleLoading}>
-          Sign up With Google
+          Continue with Google
         </GoogleButton>
         <AuthDivider />
         <div className="grid gap-4 sm:grid-cols-2">
@@ -118,20 +117,14 @@ export default function SignUpPage() {
         </div>
         <div className="mt-4 grid gap-4 sm:grid-cols-[0.36fr_1fr]">
           <CountryCodeSelect countryName={form.country} countryCode={form.countryCode} onSelect={updateCountry} />
-          <AuthField id="phone" label="Phone number" value={form.phone} onChange={(value) => updateField("phone", value)} autoComplete="tel" />
+          <AuthField id="phone" label="Phone number" type="tel" value={form.phone} onChange={(value) => updateField("phone", value)} autoComplete="tel" />
         </div>
-        <AuthField id="signup-email" label="Email Address" type="email" value={form.email} onChange={(value) => updateField("email", value)} autoComplete="email" />
+        <AuthField id="signup-email" label="Email address" type="email" value={form.email} onChange={(value) => updateField("email", value)} autoComplete="email" />
         <AuthField id="signup-password" label="Create password" type="password" value={form.password} onChange={(value) => updateField("password", value)} autoComplete="new-password" reveal />
         <p className="mt-2 text-xs text-mc-ink/70">Enter from 8 to 20 characters</p>
         <AuthField id="confirm-password" label="Confirm password" type="password" value={form.confirmPassword} onChange={(value) => updateField("confirmPassword", value)} autoComplete="new-password" reveal />
-        {error ? <p className="mt-4 rounded-[0.8rem] bg-mc-orange/10 px-4 py-2 text-sm font-semibold text-mc-orange-dark">{error}</p> : null}
+        {error ? <p role="alert" className="mt-4 rounded-lg bg-mc-orange/10 px-4 py-2 text-sm font-semibold text-mc-orange-dark">{error}</p> : null}
         <AuthPrimaryButton loading={loading}>{loading ? "Creating account" : "Sign up"}</AuthPrimaryButton>
-        <p className="mt-4 text-center font-auth text-xs text-mc-orange-dark">
-          Already have an account?{" "}
-          <Link href="/signin" transitionTypes={["nav-back"]} className="text-mc-ink">
-            Sign in
-          </Link>
-        </p>
       </form>
     </AuthShell>
   );
@@ -161,14 +154,14 @@ function CountryCodeSelect({ countryName, countryCode, onSelect }: { countryName
 
   return (
     <div className="relative mt-5">
-      <span className="block font-auth text-[13px] leading-5 text-mc-form-muted">Code</span>
+      <span className="block text-sm font-semibold">Country code</span>
       <button
         id="country-code"
         type="button"
         aria-expanded={open}
         aria-haspopup="listbox"
         onClick={() => setOpen((current) => !current)}
-        className="mt-1 flex h-[46px] w-full items-center gap-2 rounded-[20px] bg-white px-3 text-sm text-mc-ink shadow-auth-input outline-none ring-1 ring-black/5 focus:ring-2 focus:ring-mc-orange/45"
+        className="mt-2 flex min-h-12 w-full items-center gap-2 rounded-lg border border-mc-muted bg-white px-3 text-sm text-mc-ink"
       >
         <Image src={selectedCountry.flag} alt={`${selectedCountry.name} flag`} width={26} height={18} sizes="26px" className="h-[18px] w-[26px] rounded-[3px] object-cover" />
         <span className="min-w-0 flex-1 truncate text-left">{selectedCountry.dialCode}</span>
@@ -193,7 +186,7 @@ function CountryCodeSelect({ countryName, countryCode, onSelect }: { countryName
                 role="option"
                 aria-selected={country.iso2 === selectedCountry.iso2}
                 onClick={() => chooseCountry(country)}
-                className="flex w-full items-center gap-3 rounded-[0.8rem] px-3 py-2 text-left text-sm hover:bg-mc-orange/10"
+                className="flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-mc-orange/10"
               >
                 <Image src={country.flag} alt={`${country.name} flag`} width={26} height={18} sizes="26px" className="h-[18px] w-[26px] rounded-[3px] object-cover" />
                 <span className="min-w-0 flex-1 truncate">{country.name}</span>

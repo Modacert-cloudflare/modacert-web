@@ -25,11 +25,8 @@ export function ApiLoadingOverlay() {
   if (!hydrated || !active) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-mc-ink/20 backdrop-blur-[2px] transition-opacity">
-      <div className="flex flex-col items-center gap-3 rounded-[1.4rem] bg-white px-10 py-8 shadow-card">
-        <div className="h-9 w-9 animate-spin rounded-full border-4 border-mc-orange border-t-transparent" />
-        <p className="text-sm font-semibold text-mc-ink/70">Loading…</p>
-      </div>
+    <div role="status" aria-live="polite" className="pointer-events-none fixed right-3 top-20 z-40 rounded-md border border-mc-muted bg-white px-4 py-2 text-sm font-medium text-mc-ink">
+      Loading…
     </div>
   );
 }
