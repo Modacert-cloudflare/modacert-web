@@ -1,35 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, Award, ScanSearch, ShieldCheck } from "lucide-react";
 import { AppFrame, ButtonLink } from "./components";
 import { BrandDirectory } from "./brand-directory";
 import { InteractiveProductCard } from "@/components/ui/card-7";
-import { figma, trustProof } from "./data";
+import { figma } from "./data";
 
 export default function Home() {
-  return <AppFrame>
-    <section className="bg-mc-soft">
-      <div className="mx-auto grid max-w-7xl lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
-        <div className="px-4 pb-8 pt-9 sm:px-6 lg:flex lg:flex-col lg:justify-center lg:px-8 lg:py-16">
-          <p className="text-sm font-semibold text-mc-brown">Luxury authentication by human specialists</p>
-          <h1 className="mt-4 max-w-lg font-display text-[clamp(2.8rem,10vw,5rem)] leading-[1.05] tracking-[-0.025em]">Know it’s authentic.</h1>
-          <p className="mt-5 max-w-[38rem] text-base leading-7 text-mc-form-muted">Professional authentication for luxury bags, watches, clothing and accessories. Upload clear photos for expert review and receive a digital result.</p>
-          <div className="mt-7 flex flex-wrap items-center gap-4">
-            <ButtonLink href="/checkout">Authenticate an item</ButtonLink>
-            <Link href="/rates" className="inline-flex min-h-12 items-center text-sm font-semibold underline underline-offset-4">View prices</Link>
-          </div>
-          <p className="mt-6 text-sm text-mc-form-muted">Price shown when you choose a brand. No payment until photos are submitted.</p>
+  return <AppFrame heroHeader>
+    <section className="home-hero relative isolate mx-3 mb-3 overflow-hidden rounded-2xl text-white sm:mx-5 sm:mb-5">
+      <div className="home-hero__content relative z-10 mx-auto flex w-full max-w-[1480px] flex-col px-6 pb-12 pt-36 sm:px-10 lg:px-14 lg:pt-44">
+        <p className="home-hero__eyebrow text-mc-gold">TRUST <span>·</span> EXPERTISE <span>·</span> CERTIFIED</p>
+        <h1 className="home-hero__title mt-4 max-w-[740px] font-display">Authenticate<br className="hidden sm:block" /> Luxury Goods</h1>
+        <p className="home-hero__description mt-5 max-w-[460px] text-white/95">Professional authentication and a documented result for your luxury items.</p>
+        <div className="home-hero__proof mt-8 grid max-w-[430px] grid-cols-3 gap-3 text-center sm:gap-6" aria-label="Service benefits">
+          <div><ShieldCheck aria-hidden="true" /><span>Expert<br />Review</span></div>
+          <div><Award aria-hidden="true" /><span>Digital<br />Certificate</span></div>
+          <div><ScanSearch aria-hidden="true" /><span>Guided<br />Photo Upload</span></div>
         </div>
-        <div className="relative aspect-[5/4] min-h-64 overflow-hidden lg:aspect-auto lg:min-h-[540px]">
-          <Image src={figma.hero} alt="Leather handbag held by its handles" fill preload fetchPriority="high" sizes="(min-width: 1024px) 55vw, 100vw" className="object-cover object-center" />
-        </div>
-      </div>
-    </section>
-
-    <section className="border-y border-mc-muted bg-white px-4 py-5 sm:px-6">
-      <div className="mx-auto flex max-w-7xl flex-wrap gap-x-8 gap-y-3 text-sm font-medium">
-        <span>Reviewed by a specialist</span><span>Guided photo upload</span><span>Digital result and certificate</span>
-        {trustProof.itemsAuthenticated > 0 ? <span>{trustProof.itemsAuthenticated.toLocaleString()} items authenticated</span> : null}
-        {trustProof.reviewCount > 0 && trustProof.reviewRating > 0 && trustProof.reviewSourceUrl ? <a href={trustProof.reviewSourceUrl}>{trustProof.reviewRating.toFixed(1)}/5 from {trustProof.reviewCount} reviews</a> : null}
+        <ButtonLink href="/checkout" tone="gold" className="home-hero__cta mt-8 w-full gap-3 rounded-full text-base sm:w-fit sm:min-w-[300px]">Authenticate Your Item <ArrowRight aria-hidden="true" className="h-5 w-5" /></ButtonLink>
       </div>
     </section>
 
