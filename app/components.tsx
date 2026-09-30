@@ -1,10 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { figma, navItems, trustProof } from "./data";
 
-export function cx(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
+export const cx = cn;
 
 export function BrandMark({ light = false }: { light?: boolean }) {
   return (

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 :root {
   --background: #f8f6f2;
@@ -13,6 +14,8 @@
   --mc-orange-dark: #773512;
   --mc-form-muted: #5b5049;
   --mc-line: #d7cec5;
+  --success: oklch(0.696 0.17 162.48);
+  --success-foreground: oklch(0.379 0.077 168.94);
   --font-body: var(--font-body-next), "Avenir Next", sans-serif;
   --font-logo: var(--font-logo-next), "Iowan Old Style", serif;
   --font-display: var(--font-display-next), "Iowan Old Style", serif;
@@ -31,7 +34,17 @@
   --color-mc-orange-dark: var(--mc-orange-dark);
   --color-mc-form-muted: var(--mc-form-muted);
   --color-mc-line: var(--mc-line);
+  --color-primary: var(--mc-orange);
+  --color-secondary: var(--mc-muted);
+  --color-muted-foreground: var(--mc-form-muted);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --font-sans: var(--font-body);
+}
+
+.dark {
+  --success: oklch(0.696 0.17 162.48);
+  --success-foreground: oklch(0.596 0.145 163.23);
 }
 
 html { scroll-behavior: smooth; }

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AppFrame, ButtonLink } from "./components";
 import { BrandDirectory } from "./brand-directory";
+import { InteractiveProductCard } from "@/components/ui/card-7";
 import { figma, trustProof } from "./data";
 
 export default function Home() {
@@ -44,12 +45,7 @@ export default function Home() {
     <section className="section-pad bg-mc-ink px-4 text-white sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2 lg:items-center lg:gap-16">
         <div><h2 className="section-title text-white">See what you receive.</h2><p className="mt-4 max-w-md leading-7 text-white/80">A digital certificate records the outcome and the details of your reviewed item.</p><p className="mt-5 text-sm text-white/70">The preview is illustrative. Your result depends on your item and the expert’s assessment.</p></div>
-        <article className="max-w-xl rounded-xl bg-white p-5 text-mc-ink sm:p-8" aria-label="Illustrative authentication result preview">
-          <div className="flex items-center justify-between gap-3 border-b border-mc-muted pb-5"><span className="font-logo text-lg tracking-[0.08em]">MODACERT</span><span className="text-xs font-semibold text-mc-brown">ILLUSTRATIVE SAMPLE</span></div>
-          <p className="mt-6 text-sm font-semibold text-mc-form-muted">Authentication outcome</p><p className="mt-1 font-display text-4xl">Authentic</p>
-          <dl className="mt-7 grid gap-3 text-sm"><div className="flex justify-between gap-4 border-b border-mc-muted pb-3"><dt>Item</dt><dd className="text-right font-semibold">Luxury handbag</dd></div><div className="flex justify-between gap-4 border-b border-mc-muted pb-3"><dt>Review</dt><dd className="text-right font-semibold">Specialist reviewed</dd></div><div className="flex justify-between gap-4 border-b border-mc-muted pb-3"><dt>Certificate</dt><dd className="text-right font-semibold">Issued after review</dd></div></dl>
-          <p className="mt-6 rounded-md bg-mc-soft p-3 text-xs text-mc-form-muted">Sample only. No certificate ID or QR code has been issued for this preview.</p>
-        </article>
+        <div className="mx-auto w-full max-w-[360px]"><InteractiveProductCard role="group" aria-label="Illustrative authentication certificate preview" imageUrl={figma.hero} logoUrl={figma.mark} title="ModaCert" description="Authentication certificate" price="AUTHENTIC" itemLabel="Luxury handbag" eyebrow="Illustrative sample" /><p className="mt-4 text-xs leading-5 text-white/75">Sample only. No certificate ID or QR code has been issued for this preview.</p></div>
       </div>
     </section>
 
