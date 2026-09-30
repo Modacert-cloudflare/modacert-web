@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Aboreto, Jomolhari, Jost } from "next/font/google";
 import { ApiLoadingOverlay } from "./_lib/api-loading";
 import "./globals.css";
@@ -24,6 +24,13 @@ export const metadata: Metadata = {
   title: "ModaCert | Luxury Authentication",
   description:
     "Authenticate designer bags, fashion, watches, jewelry, and accessories through ModaCert's expert-reviewed checkout workflow.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({

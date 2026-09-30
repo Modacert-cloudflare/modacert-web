@@ -164,11 +164,11 @@ export default function CheckoutPage() {
     finally { setLoading(false); }
   }, [requestId]);
 
-  if (!hydrated) return <main className="grid min-h-screen place-items-center bg-mc-soft"><p role="status">Loading checkout…</p></main>;
+  if (!hydrated) return <main className="grid min-h-dvh place-items-center bg-mc-soft"><p role="status">Loading checkout…</p></main>;
   const stage = step === "brand" || step === "category" || step === "nfc" ? 0 : step === "upload" ? 1 : step === "payment" ? 2 : step === "done" ? 3 : -1;
   const checkoutSteps = ["Brand & item", "Photos", "Payment", "Done"].map((label, index) => ({ label, completed: stage === 3 || index < stage }));
-  return <main id="main-content" className="min-h-screen bg-mc-soft text-mc-ink">
-    <header className="border-b border-mc-muted bg-white"><div className="mx-auto flex h-[68px] max-w-5xl items-center justify-between px-4 sm:px-6"><button type="button" onClick={() => navigate("/")} className="min-h-11 font-logo text-lg tracking-[0.08em]">MODACERT</button><div className="flex gap-3"><button type="button" onClick={() => navigate("/rates")} className="min-h-11 px-2 text-sm">Pricing</button>{user ? <button type="button" onClick={logout} className="min-h-11 px-2 text-sm">Sign out</button> : null}</div></div></header>
+  return <main id="main-content" className="min-h-dvh bg-mc-soft text-mc-ink">
+    <header className="site-header border-b border-mc-muted bg-white"><div className="mx-auto flex h-[68px] max-w-5xl items-center justify-between px-4 sm:px-6"><button type="button" onClick={() => navigate("/")} className="min-h-11 font-logo text-lg tracking-[0.08em]">MODACERT</button><div className="flex gap-3"><button type="button" onClick={() => navigate("/rates")} className="min-h-11 px-2 text-sm">Pricing</button>{user ? <button type="button" onClick={logout} className="min-h-11 px-2 text-sm">Sign out</button> : null}</div></div></header>
     <div className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6 lg:pt-10">
       <div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-sm font-medium text-mc-brown">{step === "auth" ? "Sign in to begin" : step === "done" ? "Submission complete" : `Step ${stage + 1} of 4`}</p><h1 className="mt-1 font-display text-3xl leading-tight sm:text-4xl">{step === "auth" ? "Start authentication" : step === "brand" ? "Choose your brand" : step === "category" ? "Choose your item" : step === "nfc" ? "Does your item have an NFC chip?" : step === "upload" ? "Add your item photos" : step === "payment" ? "Review and pay" : "Your item is submitted"}</h1></div>{selectedBrand && step !== "done" ? <p className="text-sm font-semibold">{selectedBrand.name}{price ? ` · ${price}` : ""}</p> : null}</div>
       {stage >= 0 ? <Pattern steps={checkoutSteps} title="Authentication progress" currentStep={stage} className="mt-6" /> : null}

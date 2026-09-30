@@ -16,7 +16,7 @@ export function BrandMark({ light = false }: { light?: boolean }) {
 
 export function SiteHeader() {
   return (
-    <header className="relative z-30 border-b border-mc-muted bg-white">
+    <header className="site-header relative z-30 border-b border-mc-muted bg-white">
       <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <BrandMark />
         <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm lg:flex">
@@ -43,7 +43,7 @@ export function SiteHeader() {
 
 export function ButtonLink({ href, children, tone = "accent", className = "" }: { href: string; children: React.ReactNode; tone?: "accent" | "dark" | "light"; className?: string }) {
   const colors = tone === "accent" ? "bg-mc-orange text-white hover:bg-mc-orange-dark" : tone === "dark" ? "bg-mc-ink text-white hover:bg-mc-brown" : "border border-mc-ink bg-transparent text-mc-ink hover:bg-mc-soft";
-  return <Link href={href} className={cx("inline-flex min-h-12 items-center justify-center rounded-lg px-5 py-3 text-center text-sm font-semibold", colors, className)}>{children}</Link>;
+  return <Link href={href} className={cx("button-link inline-flex min-h-12 items-center justify-center rounded-lg px-5 py-3 text-center text-sm font-semibold", colors, className)}>{children}</Link>;
 }
 
 export function Footer() {
