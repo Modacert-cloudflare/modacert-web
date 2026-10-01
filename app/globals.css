@@ -16,6 +16,7 @@
   --mc-gold-light: #f0d6a4;
   --mc-form-muted: #5b5049;
   --mc-line: #d7cec5;
+  --mc-surface: #fff;
   --success: oklch(0.696 0.17 162.48);
   --success-foreground: oklch(0.379 0.077 168.94);
   --font-body: var(--font-body-next), "Avenir Next", sans-serif;
@@ -69,6 +70,73 @@ button:disabled { cursor: not-allowed; }
 .section-title { max-width: 38rem; font-family: var(--font-display); font-size: clamp(2rem, 6vw, 3.6rem); line-height: 1.13; letter-spacing: -0.02em; text-wrap: balance; }
 h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
+.brand-showcase-section { background: var(--mc-soft); padding: clamp(3rem, 6vw, 5rem) 0; }
+.brand-showcase { padding-inline: 0.75rem; }
+.brand-showcase__hero { position: relative; isolation: isolate; min-height: 620px; overflow: hidden; border-radius: 1rem; background: var(--mc-soft); }
+.brand-showcase__hero-image { z-index: -2; object-fit: cover; object-position: 70% bottom; }
+.brand-showcase__hero::after { position: absolute; z-index: -1; inset: 0; background: linear-gradient(to bottom, var(--mc-soft) 0%, color-mix(in srgb, var(--mc-soft) 94%, transparent) 42%, transparent 80%); content: ""; }
+.brand-showcase__copy { max-width: 740px; padding: 2rem 1.25rem; }
+.brand-showcase__eyebrow { display: flex; align-items: center; gap: 1rem; color: var(--mc-brown-soft); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; }
+.brand-showcase__eyebrow::after { width: 3rem; height: 1px; background: var(--mc-muted); content: ""; }
+.brand-showcase__title { max-width: 690px; margin-top: 2rem; font-family: var(--font-display); font-size: clamp(2.75rem, 8vw, 5rem); line-height: 1.02; letter-spacing: -0.025em; }
+.brand-showcase__description { max-width: 35rem; margin-top: 1.5rem; color: var(--mc-form-muted); font-size: clamp(1rem, 1.7vw, 1.2rem); line-height: 1.5; }
+.brand-showcase__search { display: flex; width: 100%; max-width: 650px; min-height: 4rem; align-items: center; gap: 0.75rem; margin-top: 2rem; border: 1px solid var(--mc-muted); border-radius: 999px; background: var(--mc-surface); padding: 0.25rem 0.3rem 0.25rem 1.15rem; color: var(--mc-form-muted); }
+.brand-showcase__search:focus-within { outline: 2px solid var(--mc-brown); outline-offset: 2px; }
+.brand-showcase__search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--mc-ink); font-size: 1rem; }
+.brand-showcase__search input::placeholder { color: var(--mc-form-muted); opacity: 1; }
+.brand-showcase__search button { display: grid; width: 3.4rem; height: 3.4rem; flex: none; place-items: center; border-radius: 50%; background: var(--mc-ink); color: var(--mc-surface); }
+.brand-showcase__search button:hover { background: var(--mc-brown); }
+.brand-showcase__results { padding: 2.5rem 0.5rem 0; scroll-margin-top: 1rem; }
+.brand-showcase__heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 0.5rem 1.5rem; }
+.brand-showcase__heading h3 { font-family: var(--font-display); font-size: clamp(1.9rem, 3vw, 2.6rem); line-height: 1.15; }
+.brand-showcase__heading a { display: inline-flex; min-height: 2.75rem; align-items: center; gap: 0.8rem; font-size: 0.9rem; font-weight: 600; text-decoration: underline; text-underline-offset: 0.3rem; }
+.brand-showcase__heading a:hover { color: var(--mc-orange-dark); }
+.brand-showcase__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; margin-top: 1.5rem; }
+.brand-card { display: block; height: 100%; overflow: hidden; border: 1px solid var(--mc-muted); border-radius: 0.9rem; background: var(--mc-surface); transition: border-color 180ms ease, transform 180ms cubic-bezier(0.23, 1, 0.32, 1); }
+.brand-card:hover { transform: translateY(-3px); border-color: var(--mc-brown); }
+.brand-card__image { position: relative; display: block; height: 140px; background-image: url("/brands/material-details.webp"); background-size: 300% auto; background-repeat: no-repeat; }
+.brand-card--gucci .brand-card__image { background-position: 0 17%; }
+.brand-card--louis-vuitton .brand-card__image { background-position: 50% 17%; }
+.brand-card--chanel .brand-card__image { background-position: 100% 17%; }
+.brand-card--hermes .brand-card__image { background-position: 0 83%; }
+.brand-card--prada .brand-card__image { background-position: 50% 83%; }
+.brand-card--dior .brand-card__image { background-position: 100% 83%; }
+.brand-card__logo { position: absolute; bottom: 0.75rem; left: 0.75rem; display: grid; width: min(80%, 11rem); height: 2.8rem; place-items: center; border-radius: 0.3rem; background: color-mix(in srgb, var(--mc-surface) 94%, transparent); }
+.brand-card__logo span { width: 82%; height: 55%; background: var(--mc-ink); -webkit-mask-image: var(--brand-logo); mask-image: var(--brand-logo); -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: contain; mask-size: contain; }
+.brand-card--gucci { --brand-logo: url("/brands/gucci.svg"); }
+.brand-card--louis-vuitton { --brand-logo: url("/brands/louis-vuitton.svg"); }
+.brand-card--chanel { --brand-logo: url("/brands/chanel.svg"); }
+.brand-card--hermes { --brand-logo: url("/brands/hermes.svg"); }
+.brand-card--prada { --brand-logo: url("/brands/prada.svg"); }
+.brand-card--dior { --brand-logo: url("/brands/dior.svg"); }
+.brand-card__body { display: flex; min-height: 5.5rem; align-items: center; justify-content: space-between; gap: 0.4rem; padding: 0.8rem; }
+.brand-card__body strong, .brand-card__body small { display: block; }
+.brand-card__body strong { font-size: 0.95rem; line-height: 1.2; }
+.brand-card__body small { margin-top: 0.35rem; color: var(--mc-form-muted); font-size: 0.85rem; }
+.brand-card__arrow { display: grid; width: 2.5rem; height: 2.5rem; flex: none; place-items: center; border: 1px solid var(--mc-brown); border-radius: 50%; }
+.brand-card:hover .brand-card__arrow { background: var(--mc-ink); color: var(--mc-surface); }
+.brand-showcase__matches { display: grid; gap: 0.5rem 1rem; margin-top: 1.5rem; }
+.brand-showcase__matches a { display: flex; min-height: 4.6rem; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--mc-muted); padding: 0.5rem 0.25rem; }
+.brand-showcase__matches a:hover { color: var(--mc-orange-dark); }
+.brand-showcase__matches strong, .brand-showcase__matches small { display: block; }
+.brand-showcase__matches small { margin-top: 0.2rem; color: var(--mc-form-muted); }
+.brand-showcase__disclaimer { margin-top: 1.25rem; color: var(--mc-form-muted); font-size: 0.75rem; }
+@media (max-width: 359px) { .brand-showcase__grid { grid-template-columns: 1fr; } .brand-showcase__eyebrow { font-size: 0.62rem; letter-spacing: 0.16em; } .brand-showcase__eyebrow::after { display: none; } }
+@media (min-width: 640px) {
+  .brand-showcase { padding-inline: 1.25rem; }
+  .brand-showcase__hero { min-height: 500px; }
+  .brand-showcase__hero-image { object-position: center; }
+  .brand-showcase__hero::after { background: linear-gradient(90deg, var(--mc-soft) 0%, color-mix(in srgb, var(--mc-soft) 90%, transparent) 36%, transparent 75%); }
+  .brand-showcase__copy { padding: clamp(2.5rem, 5vw, 5rem); }
+  .brand-showcase__description { max-width: 27rem; }
+  .brand-showcase__results { padding-inline: 0; }
+  .brand-card__image { height: 180px; }
+  .brand-card__body { padding: 1rem 1.2rem; }
+  .brand-card__body strong { font-size: 1.1rem; }
+  .brand-showcase__matches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) { .brand-showcase__description { max-width: 35rem; } .brand-showcase__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } .brand-card__image { height: 190px; } }
+@media (prefers-reduced-motion: reduce) { .brand-card { transition: border-color 180ms ease; } .brand-card:hover { transform: none; } }
 .site-footer { overflow: hidden; border-bottom: 1px solid var(--mc-muted); border-radius: 0 0 1.5rem 1.5rem; }
 .site-footer__top { display: grid; gap: 3rem; padding-bottom: 3.5rem; }
 .site-footer__nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
