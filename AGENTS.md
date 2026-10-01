@@ -54,7 +54,7 @@ app/
 | `NEXT_PUBLIC_USER_SERVICE_URL` | `http://localhost:3005` | User/auth/brand/upload backend |
 | `NEXT_PUBLIC_PAYMENT_SERVICE_URL` | `http://localhost:3002` | PayPal payment backend |
 | `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | `A...` | PayPal sandbox client ID |
-| `NEXT_PUBLIC_PAYMENT_MODE` | `fake` | Frontend payment UI mode: `paypal` renders PayPal Buttons, `fake` renders the local fake pay button |
+| `NEXT_PUBLIC_PAYMENT_MODE` | `fake` | `production` and `sandbox` render PayPal Buttons with matching credentials; `fake` renders the fake pay button. Legacy `paypal` retains PayPal behavior. |
 
 ---
 
@@ -204,14 +204,17 @@ There are two separate payment-mode knobs:
 
 Use matching modes:
 
-- Real PayPal: set `NEXT_PUBLIC_PAYMENT_MODE=paypal` in this repo and `PAYMENT_MODE=paypal` plus PayPal credentials in payment-service.
+- Production PayPal: set `NEXT_PUBLIC_PAYMENT_MODE=production` in this repo and `PAYMENT_MODE=paypal` plus live credentials and `PAYPAL_BASE_URL=https://api-m.paypal.com` in payment-service.
+- Sandbox PayPal: set `NEXT_PUBLIC_PAYMENT_MODE=sandbox` in this repo and `PAYMENT_MODE=paypal` plus sandbox credentials and `PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com` in payment-service.
 - Fake checkout: set `NEXT_PUBLIC_PAYMENT_MODE=fake` in this repo and `PAYMENT_MODE=fake` in payment-service.
+
+An omitted frontend mode defaults to `production`; legacy `paypal` preserves the PayPal path. Unknown modes are rejected. Set the frontend PayPal client ID and service origins to match the selected environment. Mode changes require restarting development or rebuilding the browser bundle.
 
 When this repo is `fake`, the checkout page shows a test payment button instead of PayPal Buttons. That button still calls `createPayPalOrder()` then `capturePayPalOrder()` against payment-service, so payment-service must also be fake if you want deterministic fake responses and no PayPal API calls.
 
 Do not run this repo in fake mode against a real PayPal payment-service. The fake button has no PayPal buyer approval step, so immediate capture cannot satisfy a real PayPal order flow.
 
-Both fake and real backend modes publish `payment.completed` to SQS after successful capture, so downstream processing stays identical when payment-service is configured correctly.
+Both fake and real backend modes publish `payment.completed` to the payment queue after successful capture, so downstream processing stays identical when payment-service is configured correctly. The frontend requires `status: "COMPLETED"` and `queued: true` before opening Success.
 
 The route names stay `/payments/paypal/create-order` and `/payments/paypal/capture` in both modes. Route names do not prove whether payment-service is using `FakePayPalService` or real `PayPalService`.
 

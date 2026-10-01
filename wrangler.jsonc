@@ -1,9 +1,13 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
-  "name": "modacert-web",
+  "name": "new-modacert-web",
+  "account_id": "8c5b416b7ebd85670bb9941a084efea6",
   "compatibility_date": "2025-06-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "vars": {
+    "USER_SERVICE_ORIGIN": "https://modacert-api-gateway-dev.firman-lasaman.workers.dev"
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
@@ -11,7 +15,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "modacert-web"
+      "service": "new-modacert-web"
     }
   ],
   "env": {

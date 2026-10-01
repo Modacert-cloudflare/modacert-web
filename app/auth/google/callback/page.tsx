@@ -48,7 +48,7 @@ function GoogleCallbackContent() {
         {error ? (
           <>
             <p className="mt-5 rounded-[0.8rem] bg-mc-orange/10 px-4 py-2 text-sm font-semibold text-mc-orange-dark">{error}</p>
-            <Link href="/signin" transitionTypes={["nav-back"]} className="mt-5 block h-[46px] rounded-[20px] bg-black px-6 py-2.5 text-center font-auth text-2xl text-white shadow-auth-input">
+            <Link href="/signin" transitionTypes={["nav-back"]} className="mt-5 inline-flex min-h-12 items-center rounded-lg bg-mc-orange px-6 text-sm font-semibold text-white">
               Back to sign in
             </Link>
           </>

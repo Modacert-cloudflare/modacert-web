@@ -45,7 +45,7 @@ function hasUnauthorizedMarker(value: unknown): boolean {
 function isUnauthorizedError(error: unknown): boolean {
   if (!axios.isAxiosError(error)) return false;
   const url = error.config?.url || "";
-  if (url.includes("/auth/login")) return false;
+  if (url.includes("/auth/login") || url === config.endpoints.lead) return false;
   const status = error.response?.status;
   if (status === 401) return true;
   const data = error.response?.data;
@@ -98,7 +98,7 @@ function isAuthEntryRequest(url: string | undefined): boolean {
 }
 
 async function retryRequest(api: AxiosInstance, error: unknown) {
-  if (!axios.isAxiosError(error) || !error.config || !isRetryableError(error) || isAuthEntryRequest(error.config.url)) {
+  if (!axios.isAxiosError(error) || !error.config || !isRetryableError(error) || isAuthEntryRequest(error.config.url) || error.config.url === config.endpoints.lead) {
     return Promise.reject(error);
   }
 
@@ -250,6 +250,10 @@ export async function fetchBrands(): Promise<Brand[]> {
   return brands;
 }
 
+export async function submitLead(payload: { email: string; timestamp: string }): Promise<void> {
+  await userApi.post(config.endpoints.lead, payload);
+}
+
 export async function fetchBrandModels(brandId: string): Promise<Model[]> {
   const { data } = await userApi.get(config.endpoints.brands.models(brandId));
   const models = data?.data ?? data;
@@ -259,6 +263,8 @@ export async function fetchBrandModels(brandId: string): Promise<Model[]> {
 
 export interface PresignResponse {
   requestId: string;
+  price?: number | string;
+  currency?: string;
   uploadUrls: Array<{ photoType: string; uploadUrl: string; key: string }>;
 }
 
@@ -298,7 +304,7 @@ export async function uploadToPresignedUrl(
 export async function confirmUpload(
   requestId: string,
   uploadedKeys?: Record<string, string>
-): Promise<{ status: string }> {
+): Promise<{ status: string; price?: number | string; currency?: string }> {
   const { data } = await userApi.post(config.endpoints.upload.confirm, { requestId, uploadedKeys });
   if (!data?.success) throw new Error(data?.error?.message || "Confirm failed");
   return data.data;
@@ -335,6 +341,8 @@ export async function capturePayPalOrder(payload: {
     payload
   );
   if (!data?.success) throw new Error(data?.error?.message || "Capture failed");
+  if (data.data?.status !== "COMPLETED") throw new Error("Payment is not completed");
+  if (data.data.queued !== true) throw new Error("Payment could not be queued for expert review");
   return data.data;
 }
 
