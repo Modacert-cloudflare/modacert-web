@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Award, ScanSearch, ShieldCheck } from "lucide-react";
 import { AppFrame, ButtonLink } from "./components";
 import { BrandDirectory } from "./brand-directory";
+import { HomeScrollScenes } from "./home-scroll-scenes";
 import { InteractiveProductCard } from "@/components/ui/card-7";
 import { figma } from "./data";
 
@@ -15,6 +16,7 @@ const inspectionDetails = [
 
 export default function Home() {
   return <AppFrame heroHeader>
+    <HomeScrollScenes />
     <section className="home-hero relative isolate overflow-hidden text-white">
       <div className="home-hero__content relative z-10 mx-auto flex w-full max-w-[1480px] flex-col px-6 pb-12 pt-36 sm:px-10 lg:px-14 lg:pt-44">
         <p className="home-hero__eyebrow text-mc-gold">TRUST <span>·</span> EXPERTISE <span>·</span> CERTIFIED</p>
