@@ -114,6 +114,53 @@ p { text-wrap: pretty; }
   .home-hero__proof svg { width: 2.4rem; height: 2.4rem; }
   .home-hero__proof span { font-size: 0.92rem; }
 }
+.inspection-section { background: var(--mc-soft); }
+.inspection-stage { position: relative; display: flex; flex-direction: column; }
+.inspection-stage__copy { order: 1; padding: clamp(2rem, 6vw, 3rem) 1.5rem; }
+.inspection-stage__copy h2 { max-width: 8.5em; font-size: clamp(2.8rem, 10vw, 4.5rem); line-height: 1.02; letter-spacing: -0.025em; }
+.inspection-stage__copy p { font-size: 1rem; }
+.inspection-stage__image { position: relative; order: 2; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: var(--mc-muted); }
+.inspection-stage__image img { object-position: 70% center; }
+.inspection-stage__connectors { display: none; }
+.inspection-cta { display: inline-flex; min-height: 3.5rem; width: 100%; align-items: center; justify-content: space-between; gap: 1.5rem; border-radius: 999px; background: var(--mc-ink); padding: 0.35rem 0.35rem 0.35rem 1.4rem; color: white; font-size: 0.92rem; font-weight: 600; transition: background-color 180ms ease; }
+.inspection-cta:hover { background: var(--mc-brown); }
+.inspection-cta:focus-visible { outline-color: var(--mc-gold); }
+.inspection-cta__icon { display: grid; width: 2.8rem; height: 2.8rem; flex: none; place-items: center; border-radius: 50%; background: var(--mc-gold); color: var(--mc-ink); transition: transform 180ms ease, background-color 180ms ease; }
+.inspection-cta:hover .inspection-cta__icon { transform: translateX(2px); background: var(--mc-gold-light); }
+.inspection-stage__details { order: 3; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding: 1.25rem; background: var(--mc-ink); color: white; }
+.inspection-detail { min-width: 0; }
+.inspection-detail__image { display: block; width: 100%; aspect-ratio: 1.5; border: 2px solid white; border-radius: 0.8rem; background-image: url("/landing/inspection-details.webp"); background-size: 200% 200%; }
+.inspection-detail--stitching .inspection-detail__image { background-position: left top; }
+.inspection-detail--stamps .inspection-detail__image { background-position: right top; }
+.inspection-detail--hardware .inspection-detail__image { background-position: left bottom; }
+.inspection-detail--identity .inspection-detail__image { background-position: right bottom; }
+.inspection-detail__label { display: block; margin-top: 0.35rem; font-size: 0.82rem; line-height: 1.25; }
+@media (min-width: 640px) and (max-width: 1023px) {
+  .inspection-stage__copy { padding-inline: 3rem; }
+  .inspection-stage__image { aspect-ratio: 16 / 9; }
+  .inspection-stage__details { grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 1.5rem 3rem; }
+  .inspection-cta { width: fit-content; min-width: 18rem; }
+}
+@media (min-width: 1024px) {
+  .inspection-stage { display: block; min-height: clamp(660px, 56vw, 820px); }
+  .inspection-stage__image { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; }
+  .inspection-stage__image img { object-position: center; }
+  .inspection-stage__image::after { position: absolute; inset: 0; background: linear-gradient(90deg, var(--mc-soft) 0%, color-mix(in srgb, var(--mc-soft) 93%, transparent) 25%, transparent 49%); content: ""; }
+  .inspection-stage__copy { position: relative; z-index: 3; display: flex; min-height: inherit; width: 41%; flex-direction: column; justify-content: center; align-items: flex-start; padding: 4rem clamp(2rem, 3.5vw, 4rem); }
+  .inspection-stage__copy h2 { font-size: clamp(3.2rem, 5.2vw, 5.4rem); }
+  .inspection-stage__copy p { font-size: clamp(1rem, 1.4vw, 1.35rem); }
+  .inspection-cta { width: fit-content; min-width: 19rem; }
+  .inspection-stage__connectors { position: absolute; inset: 0; z-index: 1; display: block; width: 100%; height: 100%; fill: white; pointer-events: none; }
+  .inspection-stage__connectors path { fill: none; stroke: white; stroke-width: 2; stroke-dasharray: 3 7; }
+  .inspection-stage__details { position: absolute; inset: 0; z-index: 2; display: block; padding: 0; background: transparent; pointer-events: none; }
+  .inspection-detail { position: absolute; width: clamp(125px, 13vw, 190px); text-shadow: 0 1px 6px var(--mc-ink); }
+  .inspection-detail__image { aspect-ratio: 1.15; }
+  .inspection-detail__label { font-size: clamp(0.8rem, 1.2vw, 1rem); }
+  .inspection-detail--stitching { top: 17%; left: 39%; }
+  .inspection-detail--stamps { top: 16%; right: 3%; }
+  .inspection-detail--hardware { bottom: 9%; left: 39%; }
+  .inspection-detail--identity { bottom: 8%; right: 3%; }
+}
 .checkout-page { background: var(--mc-ink); color: var(--mc-ink); }
 .checkout-header { background: var(--mc-ink); color: white; border-bottom: 1px solid color-mix(in srgb, var(--mc-gold) 24%, transparent); }
 .checkout-brand small { margin-top: 0.3rem; color: var(--mc-gold-light); font-family: var(--font-body); }

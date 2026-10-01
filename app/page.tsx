@@ -6,6 +6,13 @@ import { BrandDirectory } from "./brand-directory";
 import { InteractiveProductCard } from "@/components/ui/card-7";
 import { figma } from "./data";
 
+const inspectionDetails = [
+  { label: "Stitching", className: "stitching" },
+  { label: "Stamps", className: "stamps" },
+  { label: "Hardware", className: "hardware" },
+  { label: "Identifying details", className: "identity" },
+] as const;
+
 export default function Home() {
   return <AppFrame heroHeader>
     <section className="home-hero relative isolate mx-3 mb-3 overflow-hidden rounded-2xl text-white sm:mx-5 sm:mb-5">
@@ -38,9 +45,13 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="section-pad mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-mc-muted"><Image src="/landing/hero-bag.png" alt="Handbag showing its leather grain, stitching and hardware" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-contain p-6" /></div>
-      <div><h2 className="section-title">Details make the decision.</h2><p className="mt-4 leading-7 text-mc-form-muted">Specialists inspect the evidence in your photos, such as construction, stitching, stamps, hardware and identifying details. Clear close-ups help them make an informed assessment.</p><Link href="/upload" className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">See the photo guide</Link></div>
+    <section className="inspection-section mx-3 my-3 overflow-hidden rounded-2xl sm:mx-5 sm:my-5" aria-labelledby="inspection-heading">
+      <div className="inspection-stage mx-auto max-w-[1600px]">
+        <div className="inspection-stage__image"><Image src="/landing/inspection-scene.webp" alt="Specialist wearing gloves examines an unbranded leather handbag with a loupe" fill unoptimized sizes="100vw" className="object-cover" /></div>
+        <div className="inspection-stage__copy"><h2 id="inspection-heading" className="font-display">Details make<br className="hidden lg:block" /> the decision.</h2><p className="mt-5 max-w-[460px] leading-relaxed text-mc-form-muted">Specialists inspect the evidence in your photos, such as construction, stitching, stamps, hardware and identifying details. Clear close-ups help them make an informed assessment.</p><Link href="/upload" className="inspection-cta mt-8"><span>See the photo guide</span><span className="inspection-cta__icon"><ArrowRight aria-hidden="true" className="h-5 w-5" /></span></Link></div>
+        <svg className="inspection-stage__connectors" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true"><path d="M520 270 L650 430 M815 270 L735 430 M520 540 L650 465 M815 540 L735 470" /><circle cx="650" cy="430" r="5" /><circle cx="735" cy="430" r="5" /><circle cx="650" cy="465" r="5" /><circle cx="735" cy="470" r="5" /></svg>
+        <ul className="inspection-stage__details" aria-label="Illustrative examples of details specialists inspect">{inspectionDetails.map((detail) => <li key={detail.label} className={`inspection-detail inspection-detail--${detail.className}`}><span className="inspection-detail__image" aria-hidden="true" /><span className="inspection-detail__label">{detail.label}</span></li>)}</ul>
+      </div>
     </section>
 
     <section id="brands" className="section-pad bg-mc-soft px-4 sm:px-6 lg:px-8"><div className="mx-auto max-w-7xl"><h2 className="section-title">Find your brand and price.</h2><p className="mt-3 max-w-xl text-mc-form-muted">Prices come from the current authentication catalog. Your exact price appears before payment.</p><div className="mt-7"><BrandDirectory compact /></div></div></section>
