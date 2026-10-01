@@ -43,6 +43,7 @@ function getProxyHeaders(request: Request) {
       headers.set(key, value);
     }
   });
+  headers.set("accept-encoding", "identity");
   return headers;
 }
 
