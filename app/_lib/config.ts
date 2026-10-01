@@ -44,6 +44,7 @@ export const config = {
   },
   paymentMode,
   endpoints: {
+    lead: "/lead",
     auth: {
       login: "/auth/login",
       register: "/auth/register",

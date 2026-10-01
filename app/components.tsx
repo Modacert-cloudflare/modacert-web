@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { Mail, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { figma, navItems, trustProof } from "./data";
+import { LeadSubscribe } from "./lead-subscribe";
 
 export const cx = cn;
 
@@ -52,22 +53,24 @@ export function ButtonLink({ href, children, tone = "accent", className = "" }: 
 
 export function Footer() {
   return (
-    <footer className="border-t border-mc-muted bg-mc-ink text-white">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1fr_auto] lg:px-8">
-        <div>
-          <BrandMark light />
-          <p className="mt-3 max-w-sm text-sm leading-6 text-white/80">Professional authentication for luxury goods, from clear photos to an expert-reviewed result.</p>
+    <footer className="site-footer border-t border-mc-muted bg-white text-mc-ink">
+      <div className="mx-auto max-w-[1480px] px-6 pt-14 sm:px-10 lg:px-14 lg:pt-16">
+        <div className="site-footer__top">
+          <div>
+            <BrandMark />
+            <p className="mt-2 max-w-sm text-sm leading-6 text-mc-form-muted">Expert authentication for the pieces you value.</p>
+            <p className="mt-5 text-sm text-mc-form-muted">Stay in the loop with ModaCert updates.</p>
+            <LeadSubscribe />
+          </div>
+          <nav aria-label="Footer navigation" className="site-footer__nav">
+            <div><h2>Services</h2><Link href="/checkout">Authenticate an item</Link><Link href="/brands">Supported brands</Link><Link href="/rates">Pricing</Link></div>
+            <div><h2>Explore</h2><Link href="/#how-it-works">How it works</Link><Link href="/upload">Photo guide</Link><Link href="/authenticate">Expert review</Link></div>
+            <div><h2>Account</h2><Link href="/signin">Sign in</Link><Link href="/signup">Create account</Link></div>
+            <div><h2>Support</h2><Link href="/payment">Payment guide</Link>{trustProof.verificationUrl ? <a href={trustProof.verificationUrl}>Verify certificate</a> : null}<a href="mailto:modacert.support@gmail.com">Contact support</a></div>
+          </nav>
         </div>
-        <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-x-8 gap-y-0 text-sm sm:grid-cols-3 [&>a]:flex [&>a]:min-h-11 [&>a]:items-center">
-          <Link href="/checkout">Authenticate</Link>
-          <Link href="/rates">Pricing</Link>
-          <Link href="/brands">Brands</Link>
-          <Link href="/#how-it-works">How it works</Link>
-          <Link href="/upload">Photo guide</Link>
-          <Link href="/signin">Sign in</Link>
-          {trustProof.verificationUrl ? <a href={trustProof.verificationUrl}>Verify certificate</a> : null}
-          <a href="mailto:modacert.support@gmail.com">Contact</a>
-        </nav>
+        <div className="site-footer__meta"><span>© {new Date().getFullYear()} ModaCert. All rights reserved.</span><a href="mailto:modacert.support@gmail.com"><Mail aria-hidden="true" className="h-4 w-4" /> Email support</a></div>
+        <div className="site-footer__note">For collectors, buyers, and resellers.</div>
       </div>
     </footer>
   );

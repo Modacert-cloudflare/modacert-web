@@ -45,7 +45,7 @@ function hasUnauthorizedMarker(value: unknown): boolean {
 function isUnauthorizedError(error: unknown): boolean {
   if (!axios.isAxiosError(error)) return false;
   const url = error.config?.url || "";
-  if (url.includes("/auth/login")) return false;
+  if (url.includes("/auth/login") || url === config.endpoints.lead) return false;
   const status = error.response?.status;
   if (status === 401) return true;
   const data = error.response?.data;
@@ -98,7 +98,7 @@ function isAuthEntryRequest(url: string | undefined): boolean {
 }
 
 async function retryRequest(api: AxiosInstance, error: unknown) {
-  if (!axios.isAxiosError(error) || !error.config || !isRetryableError(error) || isAuthEntryRequest(error.config.url)) {
+  if (!axios.isAxiosError(error) || !error.config || !isRetryableError(error) || isAuthEntryRequest(error.config.url) || error.config.url === config.endpoints.lead) {
     return Promise.reject(error);
   }
 
@@ -248,6 +248,10 @@ export async function fetchBrands(): Promise<Brand[]> {
   const brands = data?.data ?? data;
   if (!Array.isArray(brands)) throw new Error("Invalid brands response");
   return brands;
+}
+
+export async function submitLead(payload: { email: string; timestamp: string }): Promise<void> {
+  await userApi.post(config.endpoints.lead, payload);
 }
 
 export async function fetchBrandModels(brandId: string): Promise<Model[]> {
