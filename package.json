@@ -6,7 +6,7 @@
     "dev": "next dev --webpack",
     "build:next": "next build --webpack",
     "build": "opennextjs-cloudflare build",
-    "build:dev": "opennextjs-cloudflare build --env dev",
+    "build:dev": "NEXT_PUBLIC_API_MODE=direct NEXT_PUBLIC_USER_SERVICE_URL=https://modacert-api-gateway-dev.firman-lasaman.workers.dev NEXT_PUBLIC_PAYMENT_SERVICE_URL=https://modacert-api-gateway-dev.firman-lasaman.workers.dev NEXT_PUBLIC_PAYMENT_MODE=fake NEXT_PUBLIC_PAYPAL_CLIENT_ID= opennextjs-cloudflare build --env dev",
     "deploy:dev": "opennextjs-cloudflare deploy --env dev",
     "preview:cf": "npm run build && wrangler dev",
     "deploy": "npm run build && opennextjs-cloudflare deploy",

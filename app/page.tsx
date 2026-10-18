@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Award, ScanSearch, ShieldCheck } from "lucide-react";
+import { ArrowRight, Award, Globe2, ScanSearch, ShieldCheck } from "lucide-react";
 import { AppFrame, ButtonLink } from "./components";
 import { BrandDirectory } from "./brand-directory";
 import { HomeScrollScenes } from "./home-scroll-scenes";
-import { InteractiveProductCard } from "@/components/ui/card-7";
-import { figma } from "./data";
+import { CertificateCarousel } from "./certificate-carousel";
 
 const inspectionDetails = [
   { label: "Stitching", className: "stitching" },
@@ -22,10 +21,11 @@ export default function Home() {
         <p className="home-hero__eyebrow text-mc-gold">TRUST <span>·</span> EXPERTISE <span>·</span> CERTIFIED</p>
         <h1 className="home-hero__title mt-4 max-w-[740px] font-display">Authenticate<br className="hidden sm:block" /> Luxury Goods</h1>
         <p className="home-hero__description mt-5 max-w-[460px] text-white/95">Professional authentication and a documented result for your luxury items.</p>
-        <div className="home-hero__proof mt-8 grid max-w-[430px] grid-cols-3 gap-3 text-center sm:gap-6" aria-label="Service benefits">
+        <div className="home-hero__proof mt-8 grid max-w-[560px] grid-cols-2 gap-5 text-center sm:grid-cols-4 sm:gap-6" aria-label="Service benefits">
           <div><ShieldCheck aria-hidden="true" /><span>Expert<br />Review</span></div>
           <div><Award aria-hidden="true" /><span>Digital<br />Certificate</span></div>
           <div><ScanSearch aria-hidden="true" /><span>Guided<br />Photo Upload</span></div>
+          <div><Globe2 aria-hidden="true" /><span>150+ Experts<br />Worldwide</span></div>
         </div>
         <ButtonLink href="/checkout" tone="gold" className="home-hero__cta mt-8 w-full gap-3 rounded-full text-base sm:w-fit sm:min-w-[300px]">Authenticate Your Item <ArrowRight aria-hidden="true" className="h-5 w-5" /></ButtonLink>
       </div>
@@ -43,7 +43,7 @@ export default function Home() {
     <section className="home-certificate px-4 text-white sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2 lg:items-center lg:gap-16">
         <div><h2 className="section-title text-white">See what you receive.</h2><p className="mt-4 max-w-md leading-7 text-white/80">A digital certificate records the outcome and the details of your reviewed item.</p><p className="mt-5 text-sm text-white/70">The preview is illustrative. Your result depends on your item and the expert’s assessment.</p></div>
-        <div className="mx-auto w-full max-w-[360px]"><InteractiveProductCard role="group" aria-label="Illustrative authentication certificate preview" imageUrl={figma.hero} logoUrl={figma.mark} title="ModaCert" description="Authentication certificate" price="AUTHENTIC" itemLabel="Luxury handbag" eyebrow="Illustrative sample" /><p className="mt-4 text-xs leading-5 text-white/75">Sample only. No certificate ID or QR code has been issued for this preview.</p></div>
+        <CertificateCarousel />
       </div>
     </section>
 
