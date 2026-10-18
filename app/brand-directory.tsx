@@ -14,7 +14,7 @@ function brandKey(name: string) {
 
 function formattedPrice(value: string) {
   const amount = Number(value);
-  return Number.isFinite(amount) && amount >= 0 ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount) : null;
+  return Number.isFinite(amount) && amount >= 0 ? `Starting from ${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount)}` : null;
 }
 
 export function BrandDirectory({ compact = false }: { compact?: boolean }) {
