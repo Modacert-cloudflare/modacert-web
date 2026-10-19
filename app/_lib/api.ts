@@ -346,4 +346,30 @@ export async function capturePayPalOrder(payload: {
   return data.data;
 }
 
+export async function createStripeCheckoutSession(
+  payload: CreateOrderPayload
+): Promise<{ sessionId: string; status: string; url: string }> {
+  const { data } = await paymentApi.post(
+    config.endpoints.payments.stripe.createSession,
+    payload
+  );
+  const session = data?.data;
+  if (!data?.success) throw new Error(data?.error?.message || "Checkout creation failed");
+  if (!session?.sessionId || !session?.status || !session?.url) throw new Error("Invalid Stripe Checkout response");
+  return session;
+}
+
+export async function fetchStripeCheckoutStatus(
+  sessionId: string
+): Promise<{ sessionId: string; referenceId: string; status: string; queued: boolean; amount: string; currency: string }> {
+  const { data } = await paymentApi.get(config.endpoints.payments.stripe.session(sessionId));
+  const session = data?.data;
+  if (!data?.success) throw new Error(data?.error?.message || "Payment status unavailable");
+  if (!session?.sessionId || !session?.referenceId || typeof session?.status !== "string" || typeof session?.queued !== "boolean") {
+    throw new Error("Invalid Stripe payment status response");
+  }
+  return session;
+}
+
 export const PAYMENT_MODE = config.paymentMode;
+export const PAYMENT_PROVIDER = config.paymentProvider;

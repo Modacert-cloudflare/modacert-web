@@ -46,6 +46,8 @@ Copy `.env.example` to `.env.local` for local fake checkout, then run `npm run d
 | `sandbox` | PayPal with a sandbox client ID | `PAYMENT_MODE=paypal`, sandbox credentials, `PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com` |
 | `fake` | One click on **Test Pay**, no charge | `PAYMENT_MODE=fake`; no PayPal credentials |
 
+`NEXT_PUBLIC_PAYMENT_PROVIDER` selects `paypal` or `stripe` in production and sandbox modes. Stripe uses a server-created hosted Checkout Session and confirms fulfilment only after the signed webhook queues `payment.completed`. It requires backend `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_SUCCESS_URL`, and `STRIPE_CANCEL_URL`; no Stripe secret belongs in this frontend.
+
 Fake payment uses the existing create-order and capture endpoints. The backend records a completed payment and queues `payment.completed` for processing. Checkout advances to Success only when capture returns `status: "COMPLETED"` and `queued: true`; failures remain at Payment. Login, brand selection, and uploads still use the backend.
 
 For production or sandbox, set `NEXT_PUBLIC_PAYPAL_CLIENT_ID` to the matching public client ID and configure both service URLs for that environment. In proxy mode, also set `USER_SERVICE_ORIGIN` and `PAYMENT_SERVICE_ORIGIN`. Keep `PAYPAL_CLIENT_SECRET` only in the payment backend. Selecting a frontend mode does not reconfigure the backend; the DEV gateway is configured for fake payments.
