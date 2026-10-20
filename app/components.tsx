@@ -10,7 +10,7 @@ export const cx = cn;
 export function BrandMark({ light = false, hero = false }: { light?: boolean; hero?: boolean }) {
   return (
     <Link href="/" className={cx("inline-flex min-h-11 items-center gap-2 font-logo text-lg tracking-[0.08em]", hero && "hero-brand", light || hero ? "text-white" : "text-mc-ink")} aria-label="ModaCert home">
-      <Image src={figma.mark} alt="" width={hero ? 42 : 30} height={hero ? 42 : 30} className={cx("object-contain", hero ? "h-10 w-10 brightness-0 invert" : "h-7 w-7")} />
+      <Image src={figma.mark} alt="" width={hero ? 42 : 30} height={hero ? 42 : 30} className={cx("object-contain", hero ? "h-10 w-10" : "h-7 w-7", (light || hero) && "brightness-0 invert")} />
       <span className={hero ? "hero-brand__wordmark" : ""}>MODACERT{hero && <small>AUTHENTICATION</small>}</span>
     </Link>
   );
@@ -24,10 +24,10 @@ export function SiteHeader({ hero = false }: { hero?: boolean }) {
         <BrandMark hero={hero} />
         <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm lg:flex">
           {links.map((item) => <Link key={item.href} href={item.href} className={cx("inline-flex min-h-11 min-w-11 items-center py-3", hero ? "text-white hover:text-mc-gold" : "text-mc-ink hover:text-mc-orange-dark")}>{item.label}</Link>)}
-          {!hero && trustProof.verificationUrl ? <a href={trustProof.verificationUrl} className="py-3 hover:text-mc-orange-dark">Verify certificate</a> : null}
         </nav>
         <div className="hidden items-center gap-4 lg:flex">
           {!hero && <Link href="/signin" className="inline-flex min-h-11 items-center px-2 text-sm font-medium">Sign in</Link>}
+          <Link href="/certificate" className={cx("button-link inline-flex min-h-12 items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold", hero ? "border-white/50 text-white hover:border-white hover:bg-white/10" : "border-mc-ink text-mc-ink hover:bg-mc-soft")}>Get certificate</Link>
           <ButtonLink href="/checkout" tone={hero ? "gold" : "accent"} className={hero ? "rounded-full px-7" : ""}>{hero ? "Authenticate Your Item" : "Authenticate an item"}</ButtonLink>
         </div>
         <details className={cx("group relative lg:hidden", hero && "ml-auto")}>
@@ -36,8 +36,8 @@ export function SiteHeader({ hero = false }: { hero?: boolean }) {
           </summary>
           <nav aria-label="Mobile navigation" className={cx("absolute right-0 top-[calc(100%+8px)] z-40 flex w-[min(18rem,calc(100vw-2rem))] flex-col gap-1 rounded-lg p-3 shadow-sm", hero ? "bg-mc-ink text-white" : "border border-mc-muted bg-white")}>
             {links.map((item) => <Link key={item.href} href={item.href} className="flex min-h-11 items-center rounded-md px-3 text-sm">{item.label}</Link>)}
-            {!hero && trustProof.verificationUrl ? <a href={trustProof.verificationUrl} className="flex min-h-11 items-center px-3 text-sm">Verify certificate</a> : null}
             <Link href="/signin" className="flex min-h-11 items-center px-3 text-sm">Sign in</Link>
+            <Link href="/certificate" className={cx("button-link mt-2 inline-flex min-h-12 w-full items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold", hero ? "border-white/50 text-white hover:border-white hover:bg-white/10" : "border-mc-ink text-mc-ink hover:bg-mc-soft")}>Get certificate</Link>
             <ButtonLink href="/checkout" tone={hero ? "gold" : "accent"} className={cx("mt-2 w-full", hero && "rounded-full")}>Authenticate an item</ButtonLink>
           </nav>
         </details>

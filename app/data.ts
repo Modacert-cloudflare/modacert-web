@@ -43,7 +43,7 @@ export const trustProof = {
   reviewCount: 0,
   reviewRating: 0,
   reviewSourceUrl: "",
-  verificationUrl: "",
+  verificationUrl: "https://certificate.modacert.com",
   turnaround: "",
 } as const;
 

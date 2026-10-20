@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import axios from "axios";
-import { PAYMENT_MODE, PAYMENT_PROVIDER, capturePayPalOrder, confirmUpload, createPayPalOrder, createStripeCheckoutSession, fetchBrands, login, requestPresignUrls, setAuthToken, uploadToPresignedUrl, type Brand, type PresignResponse } from "../_lib/api";
+import { PAYMENT_MODE, PAYMENT_PROVIDER, capturePayPalOrder, confirmUpload, createPayPalOrder, createStripeCheckoutSession, fetchBrands, login, logoutSession, requestPresignUrls, setAuthToken, uploadToPresignedUrl, type Brand, type PresignResponse } from "../_lib/api";
 import { config } from "../_lib/config";
 import { clearAuth, getStoredToken, getStoredUser, saveAuth, type AuthUser } from "../_lib/auth";
 import { cx } from "../components";
@@ -113,8 +113,9 @@ export default function CheckoutPage() {
     } catch (cause) { setError(messageFromError(cause, "Sign in failed. Check your connection and try again.")); }
     finally { submitting.current = false; setLoading(false); }
   }
-  function logout() {
-    clearAuth(); setAuthToken(null); setToken(null); setUser(null); setSelectedBrand(null);
+  async function logout() {
+    try { await logoutSession(); }
+    finally { clearAuth(); setAuthToken(null); setToken(null); setUser(null); setSelectedBrand(null); }
     setSelectedCategory(""); setNfcMode(null); setPhotos({}); setRequestId(null); setConfirmedPrice(null);
     pendingUpload.current = null; uploadedKeys.current = {}; setPaymentCompleted(false); goTo("auth");
   }

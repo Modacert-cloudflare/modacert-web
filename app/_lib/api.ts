@@ -98,7 +98,7 @@ function isAuthEntryRequest(url: string | undefined): boolean {
 }
 
 async function retryRequest(api: AxiosInstance, error: unknown) {
-  if (!axios.isAxiosError(error) || !error.config || !isRetryableError(error) || isAuthEntryRequest(error.config.url) || error.config.url === config.endpoints.lead) {
+  if (!axios.isAxiosError(error) || !error.config || !isRetryableError(error) || isAuthEntryRequest(error.config.url) || error.config.url === config.endpoints.lead || error.config.url === config.endpoints.certificates.retrieve) {
     return Promise.reject(error);
   }
 
@@ -243,6 +243,10 @@ export async function exchangeGoogleCode(code: string): Promise<LoginResponse> {
   return parseAuthResponse(data);
 }
 
+export async function logoutSession(): Promise<void> {
+  await userApi.post(config.endpoints.auth.logout);
+}
+
 export async function fetchBrands(): Promise<Brand[]> {
   const { data } = await userApi.get(config.endpoints.brands.list);
   const brands = data?.data ?? data;
@@ -252,6 +256,14 @@ export async function fetchBrands(): Promise<Brand[]> {
 
 export async function submitLead(payload: { email: string; timestamp: string }): Promise<void> {
   await userApi.post(config.endpoints.lead, payload);
+}
+
+export async function retrieveCertificate(payload: { uuid: string }): Promise<{ downloadUrl: string }> {
+  const { data } = await userApi.post(config.endpoints.certificates.retrieve, payload);
+  if (!data?.success || typeof data?.data?.downloadUrl !== "string") {
+    throw new Error(data?.error?.message || "Certificate retrieval failed");
+  }
+  return data.data;
 }
 
 export async function fetchBrandModels(brandId: string): Promise<Model[]> {

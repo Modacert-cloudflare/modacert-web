@@ -13,7 +13,8 @@
     "deploy:cf": "npm run deploy",
     "start": "next start",
     "lint": "eslint",
-    "test:payment": "node --test tests/payment.test.mjs"
+    "test:payment": "node --test tests/payment.test.mjs",
+    "test:certificate": "node --experimental-strip-types --test tests/certificate-rewrites.test.mjs"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^9.1.1",

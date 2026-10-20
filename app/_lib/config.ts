@@ -72,6 +72,9 @@ export const config = {
       presign: "/upload/presign",
       confirm: "/upload/confirm",
     },
+    certificates: {
+      retrieve: "/certificates/retrieve",
+    },
     payments: {
       paypal: {
         createOrder: "/payments/paypal/create-order",

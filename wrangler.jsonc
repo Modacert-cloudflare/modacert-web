@@ -5,6 +5,13 @@
   "account_id": "8c5b416b7ebd85670bb9941a084efea6",
   "compatibility_date": "2025-06-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "certificate.modacert.com",
+      "custom_domain": true
+    }
+  ],
   "vars": {
     "USER_SERVICE_ORIGIN": "https://modacert-api-gateway-dev.firman-lasaman.workers.dev",
     "PAYMENT_SERVICE_ORIGIN": "https://modacert-api-gateway-dev.firman-lasaman.workers.dev"
