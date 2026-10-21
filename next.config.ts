@@ -1,6 +1,5 @@
 import type { NextConfig } from "next";
 import path from "node:path";
-import { certificateRewrites } from "./lib/certificate-rewrites";
 
 const nextConfig: NextConfig = {
   images: {
@@ -17,7 +16,6 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
-  rewrites: async () => certificateRewrites(),
 };
 
 export default nextConfig;
