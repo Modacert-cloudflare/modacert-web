@@ -83,20 +83,20 @@ export function CertificateLookup({ initialUuid = "" }: { initialUuid?: string }
             </div>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <a href={downloads.downloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-mc-ink px-5 text-center text-sm font-semibold text-white transition-colors hover:bg-mc-brown focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mc-orange">
-              Version 1 · Refined
-              <ArrowRight aria-hidden="true" className="h-4 w-4" />
-            </a>
             {downloads.originalDownloadUrl ? (
-              <a href={downloads.originalDownloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-mc-ink bg-white px-5 text-center text-sm font-semibold text-mc-ink transition-colors hover:bg-mc-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mc-orange">
-                Version 2 · Reference
+              <a href={downloads.originalDownloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-mc-ink px-5 text-center text-sm font-semibold text-white transition-colors hover:bg-mc-brown focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mc-orange">
+                Version 1 · Reference
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </a>
             ) : (
               <button type="button" disabled className="min-h-12 rounded-full border border-mc-muted bg-mc-soft px-5 text-sm font-semibold text-mc-form-muted opacity-70">
-                Version 2 · Unavailable
+                Version 1 · Unavailable
               </button>
             )}
+            <a href={downloads.downloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-mc-ink bg-white px-5 text-center text-sm font-semibold text-mc-ink transition-colors hover:bg-mc-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mc-orange">
+              Version 2 · Refined
+              <ArrowRight aria-hidden="true" className="h-4 w-4" />
+            </a>
           </div>
         </div>
       ) : (
