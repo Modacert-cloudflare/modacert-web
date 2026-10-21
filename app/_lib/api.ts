@@ -258,9 +258,9 @@ export async function submitLead(payload: { email: string; timestamp: string }):
   await userApi.post(config.endpoints.lead, payload);
 }
 
-export async function retrieveCertificate(payload: { uuid: string }): Promise<{ downloadUrl: string }> {
+export async function retrieveCertificate(payload: { uuid: string }): Promise<{ downloadUrl: string; originalDownloadUrl?: string }> {
   const { data } = await userApi.post(config.endpoints.certificates.retrieve, payload);
-  if (!data?.success || typeof data?.data?.downloadUrl !== "string") {
+  if (!data?.success || typeof data?.data?.downloadUrl !== "string" || (data.data.originalDownloadUrl !== undefined && typeof data.data.originalDownloadUrl !== "string")) {
     throw new Error(data?.error?.message || "Certificate retrieval failed");
   }
   return data.data;

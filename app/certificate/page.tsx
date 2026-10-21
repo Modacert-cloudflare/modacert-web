@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function CertificatePage({ searchParams }: { searchParams: Promise<{ uuid?: string | string[] }> }) {
+export default async function CertificatePage({ searchParams }: { searchParams: Promise<{ code?: string | string[]; uuid?: string | string[] }> }) {
   const query = await searchParams;
-  const initialUuid = typeof query.uuid === "string" ? query.uuid : "";
+  const initialUuid = typeof query.code === "string" ? query.code : typeof query.uuid === "string" ? query.uuid : "";
 
   return (
     <div className="min-h-dvh bg-mc-ink">

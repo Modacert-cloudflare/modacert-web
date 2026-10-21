@@ -16,7 +16,7 @@ function messageFromError(error: unknown) {
 
 export function CertificateLookup({ initialUuid = "" }: { initialUuid?: string }) {
   const [uuid, setUuid] = useState(initialUuid);
-  const [downloadUrl, setDownloadUrl] = useState("");
+  const [downloads, setDownloads] = useState<{ downloadUrl: string; originalDownloadUrl?: string } | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const submitting = useRef(false);
@@ -27,10 +27,10 @@ export function CertificateLookup({ initialUuid = "" }: { initialUuid?: string }
     submitting.current = true;
     setLoading(true);
     setError("");
-    setDownloadUrl("");
+    setDownloads(null);
     try {
       const result = await retrieveCertificate({ uuid: uuid.trim() });
-      setDownloadUrl(result.downloadUrl);
+      setDownloads(result);
     } catch (requestError) {
       setError(messageFromError(requestError));
     } finally {
@@ -41,7 +41,7 @@ export function CertificateLookup({ initialUuid = "" }: { initialUuid?: string }
 
   function resetResult() {
     setError("");
-    setDownloadUrl("");
+    setDownloads(null);
   }
 
   return (
@@ -73,19 +73,31 @@ export function CertificateLookup({ initialUuid = "" }: { initialUuid?: string }
 
       {error ? <p role="alert" className="mt-5 rounded-lg bg-mc-orange/10 px-4 py-3 text-sm font-semibold leading-6 text-mc-orange-dark">{error}</p> : null}
 
-      {downloadUrl ? (
+      {downloads ? (
         <div role="status" className="mt-5 rounded-lg bg-success/10 p-4 text-success-foreground">
           <div className="flex items-start gap-3">
             <FileCheck2 aria-hidden="true" className="mt-0.5 h-5 w-5 flex-none" />
             <div>
               <p className="font-semibold">Certificate found</p>
-              <p className="mt-1 text-sm leading-6">Private access expires in 10 minutes.</p>
+              <p className="mt-1 text-sm leading-6">Choose a layout. Private access expires in 10 minutes.</p>
             </div>
           </div>
-          <a href={downloadUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-mc-ink px-5 text-sm font-semibold text-white hover:bg-mc-brown">
-            Open certificate PDF
-            <ArrowRight aria-hidden="true" className="h-4 w-4" />
-          </a>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <a href={downloads.downloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-mc-ink px-5 text-center text-sm font-semibold text-white transition-colors hover:bg-mc-brown focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mc-orange">
+              Version 1 · Refined
+              <ArrowRight aria-hidden="true" className="h-4 w-4" />
+            </a>
+            {downloads.originalDownloadUrl ? (
+              <a href={downloads.originalDownloadUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-mc-ink bg-white px-5 text-center text-sm font-semibold text-mc-ink transition-colors hover:bg-mc-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mc-orange">
+                Version 2 · Reference
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </a>
+            ) : (
+              <button type="button" disabled className="min-h-12 rounded-full border border-mc-muted bg-mc-soft px-5 text-sm font-semibold text-mc-form-muted opacity-70">
+                Version 2 · Unavailable
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <button type="submit" disabled={loading} className="checkout-primary mt-6 inline-flex min-h-13 w-full items-center justify-center gap-2 px-5 text-sm">
