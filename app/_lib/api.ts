@@ -42,10 +42,26 @@ function hasUnauthorizedMarker(value: unknown): boolean {
   return typeof value === "string" && value.toLowerCase() === "unauthorized";
 }
 
+function isPublicRequest(url: string | undefined): boolean {
+  if (!url) return false;
+  const path = new URL(url, "http://local").pathname;
+  const publicPaths = [
+    config.endpoints.brands.list,
+    config.endpoints.auth.login,
+    config.endpoints.auth.register,
+    config.endpoints.auth.refresh,
+    config.endpoints.auth.google,
+    config.endpoints.auth.googleCallback,
+    config.endpoints.auth.googleLogin,
+    config.endpoints.lead,
+  ];
+  return publicPaths.some((endpoint) => path === endpoint || path === `${config.apiPrefix}${endpoint}`);
+}
+
 function isUnauthorizedError(error: unknown): boolean {
   if (!axios.isAxiosError(error)) return false;
   const url = error.config?.url || "";
-  if (url.includes("/auth/login") || url === config.endpoints.lead) return false;
+  if (isPublicRequest(url)) return false;
   const status = error.response?.status;
   if (status === 401) return true;
   const data = error.response?.data;
@@ -130,6 +146,10 @@ async function retryRequest(api: AxiosInstance, error: unknown) {
       notifyListeners();
       if (isRetryableError(error)) return retryRequest(api, error);
       if (isUnauthorizedError(error)) redirectToSignIn();
+      if (axios.isAxiosError(error) && isPublicRequest(error.config?.url)) {
+        clearAuth();
+        setAuthToken(null);
+      }
       return Promise.reject(error);
     },
   );
@@ -241,6 +261,11 @@ export async function getGoogleAuthUrl(): Promise<string> {
 
 export async function exchangeGoogleCode(code: string): Promise<LoginResponse> {
   const { data } = await userApi.post(config.endpoints.auth.googleCallback, { code });
+  return parseAuthResponse(data);
+}
+
+export async function loginWithGoogle(idToken: string): Promise<LoginResponse> {
+  const { data } = await userApi.post(config.endpoints.auth.googleLogin, { idToken });
   return parseAuthResponse(data);
 }
 

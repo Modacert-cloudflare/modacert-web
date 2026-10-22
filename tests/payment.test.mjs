@@ -11,7 +11,7 @@ function load(file, env, imports = {}) {
     compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true },
   });
   const exports = {};
-  runInNewContext(outputText, { exports, process: { env }, require: (name) => imports[name] });
+  runInNewContext(outputText, { exports, process: { env }, require: (name) => imports[name], URL });
   return exports;
 }
 
@@ -34,6 +34,66 @@ test("payment providers default to PayPal and accept Stripe", () => {
   assert.equal(load("config", {}).config.paymentProvider, "paypal");
   assert.equal(load("config", { NEXT_PUBLIC_PAYMENT_PROVIDER: "stripe" }).config.paymentProvider, "stripe");
   assert.throws(() => load("config", { NEXT_PUBLIC_PAYMENT_PROVIDER: "card" }), /must be paypal or stripe/);
+});
+
+test("Google sign-in exchanges the credential for a ModaCert session", async () => {
+  const originalAdapter = axios.defaults.adapter;
+  let request;
+  axios.defaults.adapter = async (config) => {
+    request = { url: config.url, body: JSON.parse(config.data) };
+    return {
+      data: {
+        data: {
+          tokens: { accessToken: "modacert-token" },
+          user: { id: "user-id", email: "customer@example.com" },
+        },
+      },
+      status: 200,
+      statusText: "OK",
+      headers: {},
+      config,
+    };
+  };
+  try {
+    const config = load("config", { NEXT_PUBLIC_API_RETRY_ATTEMPTS: "1" });
+    const api = load("api", {}, { axios, "./config": config, "./auth": {} });
+    const response = await api.loginWithGoogle("google-id-token");
+    assert.equal(response.accessToken, "modacert-token");
+    assert.deepEqual(request, {
+      url: "/auth/google/login",
+      body: { idToken: "google-id-token" },
+    });
+  } finally {
+    axios.defaults.adapter = originalAdapter;
+  }
+});
+
+test("public brand lookup does not redirect visitors to sign-in on stale auth", async () => {
+  const originalAdapter = axios.defaults.adapter;
+  let cleared = 0;
+  axios.defaults.adapter = async (config) => {
+    const error = new Error("Unauthorized");
+    error.isAxiosError = true;
+    error.config = config;
+    error.response = { status: 401, data: { error: { code: "UNAUTHORIZED" } } };
+    throw error;
+  };
+  try {
+    const config = load("config", { NEXT_PUBLIC_API_RETRY_ATTEMPTS: "1" });
+    const api = load("api", {}, {
+      axios,
+      "./config": config,
+      "./auth": {
+        clearAuth: () => { cleared += 1; },
+        getStoredToken: () => "stale-token",
+        rememberAuthReturnPath: () => { throw new Error("public lookup redirected"); },
+      },
+    });
+    await assert.rejects(api.fetchBrands(), /Unauthorized/);
+    assert.equal(cleared, 1);
+  } finally {
+    axios.defaults.adapter = originalAdapter;
+  }
 });
 
 test("payment APIs require completed capture and queued expert processing in every mode", async () => {

@@ -9,6 +9,7 @@ const paymentServiceUrl =
     ? ""
     : process.env.NEXT_PUBLIC_PAYMENT_SERVICE_URL || "http://localhost:3002";
 const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 export type PaymentMode = "production" | "sandbox" | "fake";
 export type PaymentProvider = "paypal" | "stripe";
 
@@ -48,6 +49,9 @@ export const config = {
   apiMode,
   paypal: {
     clientId: paypalClientId,
+  },
+  google: {
+    clientId: googleClientId,
   },
   paymentMode,
   paymentProvider,

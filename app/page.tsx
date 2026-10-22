@@ -5,6 +5,7 @@ import { AppFrame, ButtonLink } from "./components";
 import { BrandDirectory } from "./brand-directory";
 import { HomeScrollScenes } from "./home-scroll-scenes";
 import { CertificateCarousel } from "./certificate-carousel";
+import { GoogleSignInButton } from "./google-sign-in-button";
 
 const inspectionDetails = [
   { label: "Stitching", className: "stitching" },
@@ -27,7 +28,10 @@ export default function Home() {
           <div><ScanSearch aria-hidden="true" /><span>Guided<br />Photo Upload</span></div>
           <div><Globe2 aria-hidden="true" /><span>150+ Experts<br />Worldwide</span></div>
         </div>
-        <ButtonLink href="/checkout" tone="gold" className="home-hero__cta mt-8 w-full gap-3 rounded-full text-base sm:w-fit sm:min-w-[300px]">Authenticate Your Item <ArrowRight aria-hidden="true" className="h-5 w-5" /></ButtonLink>
+        <div className="mt-8 flex w-full flex-col gap-3 sm:w-fit">
+          <ButtonLink href="/checkout" tone="gold" className="home-hero__cta w-full gap-3 rounded-full text-base sm:min-w-[300px]">Authenticate Your Item <ArrowRight aria-hidden="true" className="h-5 w-5" /></ButtonLink>
+          <GoogleSignInButton />
+        </div>
       </div>
     </section>
 
