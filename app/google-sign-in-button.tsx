@@ -12,16 +12,21 @@ type GoogleCredentialResponse = {
   credential?: string;
 };
 
-type GoogleButtonConfiguration = {
-  type: "standard";
-  theme: "outline";
-  size: "large";
-  text: "signin_with";
-  shape: "pill";
-  logo_alignment: "left";
-  locale: "en";
-  width: number;
-};
+type GoogleButtonConfiguration =
+  | {
+      type: "standard";
+      theme: "outline";
+      size: "large";
+      text: "signin_with";
+      shape: "pill";
+      logo_alignment: "left";
+      locale: "en";
+      width: number;
+    }
+  | {
+      type: "icon";
+      size: "large";
+    };
 
 declare global {
   interface Window {
@@ -57,6 +62,7 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
   const initializedRef = useRef(false);
   const submittingRef = useRef(false);
   const [scriptReady, setScriptReady] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -80,18 +86,18 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
     const buttonElement = buttonRef.current;
     if (!buttonElement) return;
     if (!config.google.clientId || !window.google) return;
-    if (initializedRef.current) return;
-    initializedRef.current = true;
 
-    const width = Math.max(240, Math.min(400, Math.floor(buttonElement.getBoundingClientRect().width)));
     buttonElement.replaceChildren();
-    window.google.accounts.id.initialize({
-      client_id: config.google.clientId,
-      callback: handleCredential,
-      context: "signin",
-      ux_mode: "popup",
-    });
-    window.google.accounts.id.renderButton(buttonElement, {
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+      window.google.accounts.id.initialize({
+        client_id: config.google.clientId,
+        callback: handleCredential,
+        context: "signin",
+        ux_mode: "popup",
+      });
+    }
+    window.google.accounts.id.renderButton(buttonElement, isDesktop ? {
       type: "standard",
       theme: "outline",
       size: "large",
@@ -99,16 +105,26 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
       shape: "pill",
       logo_alignment: "left",
       locale: "en",
-      width,
+      width: 220,
+    } : {
+      type: "icon",
+      size: "large",
     });
-  }, [handleCredential]);
+  }, [handleCredential, isDesktop]);
 
   useEffect(() => {
     if (scriptReady) renderButton();
   }, [renderButton, scriptReady]);
 
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const onChange = (event: MediaQueryListEvent) => setIsDesktop(event.matches);
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
   return (
-    <div className={`w-full sm:w-[300px] ${className}`}>
+    <div data-testid="google-signin-float" className={`fixed right-4 top-[calc(env(safe-area-inset-top,0px)_+_76px)] z-20 w-11 sm:right-6 lg:right-8 lg:top-[calc(env(safe-area-inset-top,0px)_+_128px)] lg:w-[220px] ${className}`}>
       <Script
         id="google-identity-services"
         src="https://accounts.google.com/gsi/client?hl=en"
@@ -116,11 +132,13 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
         onReady={() => setScriptReady(true)}
         onError={() => setError("Google sign-in could not be loaded.")}
       />
-      <div className="relative min-h-11">
-        <div ref={buttonRef} className={loading ? "invisible" : ""} />
-        {loading ? <div className="absolute inset-0 flex items-center justify-center rounded-full bg-white px-4 text-sm font-semibold text-mc-ink">Signing in with Google…</div> : null}
+      <div className="relative flex min-h-11 items-center justify-center lg:block">
+        <div className={`scale-110 lg:scale-100 ${loading ? "invisible" : ""}`}>
+          <div ref={buttonRef} />
+        </div>
+        {loading ? <div className="absolute inset-0 flex items-center justify-center rounded-full bg-mc-soft text-sm font-semibold text-mc-ink"><span className="lg:hidden">…</span><span className="hidden lg:inline">Signing in with Google…</span></div> : null}
       </div>
-      {error || !config.google.clientId ? <p role="alert" className="mt-2 text-sm font-semibold text-white">{error || "Google sign-in is not configured."}</p> : null}
+      {error || !config.google.clientId ? <p role="alert" className="absolute right-0 top-full mt-2 w-max max-w-[min(16rem,calc(100vw-2rem))] rounded-full bg-mc-soft/95 px-3 py-2 text-sm font-semibold text-mc-ink shadow-card">{error || "Google sign-in is not configured."}</p> : null}
     </div>
   );
 }

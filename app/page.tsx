@@ -18,6 +18,7 @@ export default function Home() {
   return <AppFrame heroHeader>
     <HomeScrollScenes />
     <section className="home-hero relative isolate overflow-hidden text-white">
+      <GoogleSignInButton />
       <div className="home-hero__content relative z-10 mx-auto flex w-full max-w-[1480px] flex-col px-6 pb-12 pt-36 sm:px-10 lg:px-14 lg:pt-44">
         <p className="home-hero__eyebrow text-mc-gold">TRUST <span>·</span> EXPERTISE <span>·</span> CERTIFIED</p>
         <h1 className="home-hero__title mt-4 max-w-[740px] font-display">Authenticate<br className="hidden sm:block" /> Luxury Goods</h1>
@@ -30,7 +31,6 @@ export default function Home() {
         </div>
         <div className="mt-8 flex w-full flex-col gap-3 sm:w-fit">
           <ButtonLink href="/checkout" tone="gold" className="home-hero__cta w-full gap-3 rounded-full text-base sm:min-w-[300px]">Authenticate Your Item <ArrowRight aria-hidden="true" className="h-5 w-5" /></ButtonLink>
-          <GoogleSignInButton />
         </div>
       </div>
     </section>
