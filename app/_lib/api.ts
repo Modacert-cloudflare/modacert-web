@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
-import { clearAuth, getStoredToken, type AuthUser } from "./auth";
+import { clearAuth, getStoredToken, rememberAuthReturnPath, type AuthUser } from "./auth";
 import { config } from "./config";
 
 const userApi = axios.create({
@@ -75,6 +75,7 @@ function redirectToSignIn() {
   clearAuth();
   setAuthToken(null);
   if (window.location.pathname === "/signin") return;
+  rememberAuthReturnPath(`${window.location.pathname}${window.location.search}${window.location.hash}`);
   window.location.href = "/signin";
 }
 

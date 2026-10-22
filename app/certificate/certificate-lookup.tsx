@@ -1,9 +1,16 @@
 "use client";
 
 import axios from "axios";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowRight, FileCheck2, KeyRound, LockKeyhole } from "lucide-react";
 import { retrieveCertificate } from "../_lib/api";
+import { getStoredToken, rememberAuthReturnPath } from "../_lib/auth";
+
+const emptySubscribe = () => () => {};
+
+function useHydrated() {
+  return useSyncExternalStore(emptySubscribe, () => true, () => false);
+}
 
 function messageFromError(error: unknown) {
   if (!axios.isAxiosError(error)) return "Certificate service is unavailable. Try again later.";
@@ -15,11 +22,21 @@ function messageFromError(error: unknown) {
 }
 
 export function CertificateLookup({ initialUuid = "" }: { initialUuid?: string }) {
+  const hydrated = useHydrated();
+  const token = hydrated ? getStoredToken() : null;
   const [uuid, setUuid] = useState(initialUuid);
   const [downloads, setDownloads] = useState<{ downloadUrl: string; originalDownloadUrl?: string } | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const submitting = useRef(false);
+
+  useEffect(() => {
+    if (!hydrated || token) return;
+    rememberAuthReturnPath(`${window.location.pathname}${window.location.search}${window.location.hash}`);
+    window.location.replace("/signin");
+  }, [hydrated, token]);
+
+  if (!token) return null;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

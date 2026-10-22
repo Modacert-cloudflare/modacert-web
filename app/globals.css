@@ -62,6 +62,7 @@ button:not(:disabled):active, summary:active, .button-link:active, label:has(inp
 a:not(.button-link):active { opacity: 0.72; }
 button:disabled { cursor: not-allowed; }
 .site-header { padding-top: env(safe-area-inset-top, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.site-header--solid { border-bottom: 1px solid color-mix(in srgb, var(--mc-gold) 24%, transparent); background: linear-gradient(110deg, var(--mc-ink), color-mix(in srgb, var(--mc-brown) 78%, var(--mc-ink))); }
 :focus-visible { outline: 2px solid var(--mc-orange-dark); outline-offset: 3px; }
 ::selection { background: var(--mc-orange); color: white; }
 .font-display { font-family: var(--font-display); }
@@ -180,7 +181,7 @@ body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
 .home-hero__proof svg { width: 2rem; height: 2rem; color: var(--mc-gold-light); stroke-width: 1.35; }
 .home-hero__proof span { font-size: 0.8rem; line-height: 1.2; }
 .home-hero__cta { min-height: 3.5rem; }
-.site-header--hero :focus-visible, .home-hero :focus-visible { outline-color: var(--mc-gold-light); }
+.site-header :focus-visible, .home-hero :focus-visible { outline-color: var(--mc-gold-light); }
 .hero-brand__wordmark { display: flex; flex-direction: column; align-items: center; line-height: 1.1; }
 .hero-brand__wordmark small { margin-top: 0.35em; color: var(--mc-gold-light); font-family: var(--font-body); font-size: 0.42em; letter-spacing: 0.33em; }
 @media (max-width: 359px) {

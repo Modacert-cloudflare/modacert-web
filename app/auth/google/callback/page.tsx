@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { exchangeGoogleCode } from "../../../_lib/api";
-import { saveAuth } from "../../../_lib/auth";
+import { consumeAuthReturnPath, saveAuth } from "../../../_lib/auth";
 import { AuthHeading, AuthShell } from "../../../auth-ui";
 
 function messageFromError(error: unknown) {
@@ -36,7 +36,7 @@ function GoogleCallbackContent() {
     exchangeGoogleCode(code)
       .then((response) => {
         saveAuth(response.accessToken, response.user, false);
-        router.replace("/checkout", { transitionTypes: ["nav-forward"] });
+        router.replace(consumeAuthReturnPath(), { transitionTypes: ["nav-forward"] });
       })
       .catch((err) => setError(messageFromError(err)));
   }, [code, initialError, router]);

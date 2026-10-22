@@ -7,7 +7,7 @@ import { figma } from "./data";
 import { SiteHeader } from "./components";
 
 export function AuthShell({ children, switchHref, switchLabel }: { children: React.ReactNode; switchHref: string; switchLabel: string }) {
-  return <><SiteHeader /><main id="main-content" className="min-h-[calc(100dvh-68px)] bg-mc-soft px-4 py-7 sm:px-6 lg:py-12"><div className="mx-auto grid max-w-5xl overflow-hidden rounded-xl bg-white lg:grid-cols-[0.85fr_1.15fr]"><div className="relative hidden min-h-[650px] lg:block"><Image src={figma.hero} alt="Leather handbag ready for authentication" fill sizes="40vw" className="object-cover" /></div><div className="p-5 sm:p-8 lg:p-12"><div className="mb-5 flex justify-end"><Link href={switchHref} className="inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">{switchLabel}</Link></div>{children}</div></div></main></>;
+  return <><SiteHeader /><main id="main-content" className="min-h-[calc(100dvh-84px)] bg-mc-soft px-4 py-7 sm:px-6 lg:py-12"><div className="mx-auto grid max-w-5xl overflow-hidden rounded-xl bg-white lg:grid-cols-[0.85fr_1.15fr]"><div className="relative hidden min-h-[650px] lg:block"><Image src={figma.hero} alt="Leather handbag ready for authentication" fill sizes="40vw" className="object-cover" /></div><div className="p-5 sm:p-8 lg:p-12"><div className="mb-5 flex justify-end"><Link href={switchHref} className="inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">{switchLabel}</Link></div>{children}</div></div></main></>;
 }
 
 export function AuthHeading({ title, description }: { title: string; description: string }) {

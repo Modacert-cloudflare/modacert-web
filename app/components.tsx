@@ -19,26 +19,26 @@ export function BrandMark({ light = false, hero = false }: { light?: boolean; he
 export function SiteHeader({ hero = false }: { hero?: boolean }) {
   const links = hero ? [{ label: "How it works", href: "/#how-it-works" }, { label: "Brands", href: "/brands" }, { label: "Pricing", href: "/rates" }, { label: "About", href: "/authenticate" }] : navItems;
   return (
-    <header className={cx("site-header z-30", hero ? "site-header--hero absolute inset-x-0 top-0 text-white" : "relative border-b border-mc-muted bg-white")}>
-      <div className={cx("mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8", hero ? "h-[100px] max-w-[1480px] lg:h-[112px]" : "h-[68px] max-w-7xl")}>
-        <BrandMark hero={hero} />
+    <header className={cx("site-header z-30 text-white", hero ? "site-header--hero absolute inset-x-0 top-0" : "site-header--solid relative")}>
+      <div className={cx("mx-auto flex max-w-[1480px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8", hero ? "h-[100px] lg:h-[112px]" : "h-[84px]")}>
+        <BrandMark hero />
         <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm lg:flex">
-          {links.map((item) => <Link key={item.href} href={item.href} className={cx("inline-flex min-h-11 min-w-11 items-center py-3", hero ? "text-white hover:text-mc-gold" : "text-mc-ink hover:text-mc-orange-dark")}>{item.label}</Link>)}
+          {links.map((item) => <Link key={item.href} href={item.href} className="inline-flex min-h-11 min-w-11 items-center py-3 text-white/90 hover:text-mc-gold">{item.label}</Link>)}
         </nav>
         <div className="hidden items-center gap-4 lg:flex">
-          {!hero && <Link href="/signin" className="inline-flex min-h-11 items-center px-2 text-sm font-medium">Sign in</Link>}
-          <Link href="/certificate" className={cx("button-link inline-flex min-h-12 items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold", hero ? "border-white/50 text-white hover:border-white hover:bg-white/10" : "border-mc-ink text-mc-ink hover:bg-mc-soft")}>Get certificate</Link>
-          <ButtonLink href="/checkout" tone={hero ? "gold" : "accent"} className={hero ? "rounded-full px-7" : ""}>{hero ? "Authenticate Your Item" : "Authenticate an item"}</ButtonLink>
+          {!hero && <Link href="/signin" className="inline-flex min-h-11 items-center px-2 text-sm font-medium text-white/90 hover:text-mc-gold">Sign in</Link>}
+          <Link href="/certificate" className="button-link inline-flex min-h-12 items-center justify-center rounded-full border border-white/40 px-5 py-3 text-sm font-semibold text-white hover:border-mc-gold hover:text-mc-gold">Get certificate</Link>
+          <ButtonLink href="/checkout" tone="gold" className="rounded-full px-7">{hero ? "Authenticate Your Item" : "Authenticate an item"}</ButtonLink>
         </div>
-        <details className={cx("group relative lg:hidden", hero && "ml-auto")}>
-          <summary aria-label="Site menu" className={cx("flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-md text-sm font-semibold [&::-webkit-details-marker]:hidden", hero ? "text-white" : "border border-mc-muted px-3")}>
-            {hero ? <Menu aria-hidden="true" className="h-7 w-7" /> : "Menu"}
+        <details className="group relative ml-auto lg:hidden">
+          <summary aria-label="Site menu" className={cx("flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-full text-white [&::-webkit-details-marker]:hidden", !hero && "border border-white/20 bg-white/5 hover:border-mc-gold/60 hover:bg-white/10")}>
+            <Menu aria-hidden="true" className="h-6 w-6" />
           </summary>
-          <nav aria-label="Mobile navigation" className={cx("absolute right-0 top-[calc(100%+8px)] z-40 flex w-[min(18rem,calc(100vw-2rem))] flex-col gap-1 rounded-lg p-3 shadow-sm", hero ? "bg-mc-ink text-white" : "border border-mc-muted bg-white")}>
-            {links.map((item) => <Link key={item.href} href={item.href} className="flex min-h-11 items-center rounded-md px-3 text-sm">{item.label}</Link>)}
-            <Link href="/signin" className="flex min-h-11 items-center px-3 text-sm">Sign in</Link>
-            <Link href="/certificate" className={cx("button-link mt-2 inline-flex min-h-12 w-full items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold", hero ? "border-white/50 text-white hover:border-white hover:bg-white/10" : "border-mc-ink text-mc-ink hover:bg-mc-soft")}>Get certificate</Link>
-            <ButtonLink href="/checkout" tone={hero ? "gold" : "accent"} className={cx("mt-2 w-full", hero && "rounded-full")}>Authenticate an item</ButtonLink>
+          <nav aria-label="Mobile navigation" className="absolute right-0 top-[calc(100%+8px)] z-40 flex w-[min(18rem,calc(100vw-2rem))] flex-col gap-1 rounded-xl border border-white/15 bg-mc-ink p-3 text-white shadow-sm">
+            {links.map((item) => <Link key={item.href} href={item.href} className="flex min-h-11 items-center rounded-md px-3 text-sm text-white/90 hover:bg-white/5 hover:text-mc-gold">{item.label}</Link>)}
+            <Link href="/signin" className="flex min-h-11 items-center rounded-md px-3 text-sm text-white/90 hover:bg-white/5 hover:text-mc-gold">Sign in</Link>
+            <Link href="/certificate" className="button-link mt-2 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/40 px-5 py-3 text-sm font-semibold text-white hover:border-mc-gold hover:text-mc-gold">Get certificate</Link>
+            <ButtonLink href="/checkout" tone="gold" className="mt-2 w-full rounded-full">Authenticate an item</ButtonLink>
           </nav>
         </details>
       </div>

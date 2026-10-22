@@ -4,6 +4,7 @@ const TOKEN_KEY = "modacert_token";
 const USER_KEY = "modacert_user";
 const REMEMBER_KEY = "modacert_remember";
 const EMAIL_KEY = "modacert_email";
+const RETURN_PATH_KEY = "modacert_return_path";
 
 export interface AuthUser {
   id: string;
@@ -64,6 +65,22 @@ export function isRemembered(): boolean {
 export function getStoredEmail(): string | null {
   if (typeof window === "undefined") return null;
   return readFrom(localStorage, EMAIL_KEY);
+}
+
+function isSafeReturnPath(path: string | null): path is string {
+  return Boolean(path?.startsWith("/") && !path.startsWith("//") && !path.includes("\\") && !path.startsWith("/signin"));
+}
+
+export function rememberAuthReturnPath(path: string): void {
+  if (typeof window === "undefined" || !isSafeReturnPath(path)) return;
+  writeTo(sessionStorage, RETURN_PATH_KEY, path);
+}
+
+export function consumeAuthReturnPath(fallback = "/checkout"): string {
+  if (typeof window === "undefined") return fallback;
+  const path = readFrom(sessionStorage, RETURN_PATH_KEY);
+  removeFrom(sessionStorage, RETURN_PATH_KEY);
+  return isSafeReturnPath(path) ? path : fallback;
 }
 
 export function saveAuth(token: string, user: AuthUser, remember: boolean): void {

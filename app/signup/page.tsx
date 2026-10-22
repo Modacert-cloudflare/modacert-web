@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { getGoogleAuthUrl, register } from "../_lib/api";
-import { saveAuth } from "../_lib/auth";
+import { consumeAuthReturnPath, saveAuth } from "../_lib/auth";
 import { countries, type CountryDialCode } from "../_lib/countries";
 import { AuthDivider, AuthField, AuthHeading, AuthPrimaryButton, AuthShell, GoogleButton } from "../auth-ui";
 
@@ -78,7 +78,7 @@ export default function SignUpPage() {
       const response = await register({ ...form });
       if ("accessToken" in response) {
         saveAuth(response.accessToken, response.user, false);
-        router.push("/checkout", { transitionTypes: ["nav-forward"] });
+        router.replace(consumeAuthReturnPath(), { transitionTypes: ["nav-forward"] });
       } else {
         router.push("/signin?registered=1", { transitionTypes: ["nav-forward"] });
       }

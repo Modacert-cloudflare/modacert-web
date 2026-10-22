@@ -4,7 +4,7 @@ import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { getGoogleAuthUrl, login } from "../_lib/api";
-import { saveAuth, getStoredEmail, isRemembered } from "../_lib/auth";
+import { consumeAuthReturnPath, saveAuth, getStoredEmail, isRemembered } from "../_lib/auth";
 import { AuthDivider, AuthField, AuthHeading, AuthPrimaryButton, AuthShell, GoogleButton } from "../auth-ui";
 
 function messageFromError(error: unknown) {
@@ -38,7 +38,7 @@ export default function SignInPage() {
     try {
       const response = await login(email, password);
       saveAuth(response.accessToken, response.user, remember);
-      router.push("/checkout", { transitionTypes: ["nav-forward"] });
+      router.replace(consumeAuthReturnPath(), { transitionTypes: ["nav-forward"] });
     } catch (err) {
       setError(messageFromError(err));
     } finally {
