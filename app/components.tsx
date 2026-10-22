@@ -4,6 +4,7 @@ import { Mail, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { figma, navItems, trustProof } from "./data";
 import { LeadSubscribe } from "./lead-subscribe";
+import { GoogleSignInButton } from "./google-sign-in-button";
 
 export const cx = cn;
 
@@ -19,18 +20,19 @@ export function BrandMark({ light = false, hero = false }: { light?: boolean; he
 export function SiteHeader({ hero = false }: { hero?: boolean }) {
   const links = hero ? [{ label: "How it works", href: "/#how-it-works" }, { label: "Brands", href: "/brands" }, { label: "Pricing", href: "/rates" }, { label: "About", href: "/authenticate" }] : navItems;
   return (
-    <header className={cx("site-header pointer-events-none z-30 text-white", hero ? "site-header--hero absolute inset-x-0 top-0" : "site-header--solid relative")}>
+    <header className={cx("site-header z-30 text-white", hero ? "site-header--hero absolute inset-x-0 top-0" : "site-header--solid relative")}>
       <div className={cx("mx-auto flex max-w-[1480px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8", hero ? "h-[100px] lg:h-[112px]" : "h-[84px]")}>
-        <div className="pointer-events-auto"><BrandMark hero /></div>
-        <nav aria-label="Main navigation" className="pointer-events-auto hidden items-center gap-6 text-sm lg:flex">
+        <BrandMark hero />
+        <nav aria-label="Main navigation" className="hidden items-center gap-6 text-sm lg:flex">
           {links.map((item) => <Link key={item.href} href={item.href} className="inline-flex min-h-11 min-w-11 items-center py-3 text-white/90 hover:text-mc-gold">{item.label}</Link>)}
         </nav>
-        <div className="pointer-events-auto hidden items-center gap-4 lg:flex">
+        {hero && <GoogleSignInButton className="ml-auto" />}
+        <div className="hidden items-center gap-4 lg:flex">
           {!hero && <Link href="/signin" className="inline-flex min-h-11 items-center px-2 text-sm font-medium text-white/90 hover:text-mc-gold">Sign in</Link>}
           <Link href="/certificate" className="button-link inline-flex min-h-12 items-center justify-center rounded-full border border-white/40 px-5 py-3 text-sm font-semibold text-white hover:border-mc-gold hover:text-mc-gold">Get certificate</Link>
           <ButtonLink href="/checkout" tone="gold" className="rounded-full px-7">{hero ? "Authenticate Your Item" : "Authenticate an item"}</ButtonLink>
         </div>
-        <details className="pointer-events-auto group relative ml-auto lg:hidden">
+        <details className={cx("group relative lg:hidden", !hero && "ml-auto")}>
           <summary aria-label="Site menu" className={cx("flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-full text-white [&::-webkit-details-marker]:hidden", !hero && "border border-white/20 bg-white/5 hover:border-mc-gold/60 hover:bg-white/10")}>
             <Menu aria-hidden="true" className="h-6 w-6" />
           </summary>

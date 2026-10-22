@@ -15,7 +15,7 @@ type GoogleCredentialResponse = {
 type GoogleButtonConfiguration =
   | {
       type: "standard";
-      theme: "outline";
+      theme: "filled_black";
       size: "large";
       text: "signin_with";
       shape: "pill";
@@ -25,6 +25,7 @@ type GoogleButtonConfiguration =
     }
   | {
       type: "icon";
+      theme: "filled_black";
       size: "large";
     };
 
@@ -62,7 +63,7 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
   const initializedRef = useRef(false);
   const submittingRef = useRef(false);
   const [scriptReady, setScriptReady] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(() => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches);
+  const [isWide, setIsWide] = useState(() => typeof window !== "undefined" && window.matchMedia("(min-width: 1280px)").matches);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -97,34 +98,35 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
         ux_mode: "popup",
       });
     }
-    window.google.accounts.id.renderButton(buttonElement, isDesktop ? {
+    window.google.accounts.id.renderButton(buttonElement, isWide ? {
       type: "standard",
-      theme: "outline",
+      theme: "filled_black",
       size: "large",
       text: "signin_with",
       shape: "pill",
       logo_alignment: "left",
       locale: "en",
-      width: 220,
+      width: 200,
     } : {
       type: "icon",
+      theme: "filled_black",
       size: "large",
     });
-  }, [handleCredential, isDesktop]);
+  }, [handleCredential, isWide]);
 
   useEffect(() => {
     if (scriptReady) renderButton();
   }, [renderButton, scriptReady]);
 
   useEffect(() => {
-    const media = window.matchMedia("(min-width: 1024px)");
-    const onChange = (event: MediaQueryListEvent) => setIsDesktop(event.matches);
+    const media = window.matchMedia("(min-width: 1280px)");
+    const onChange = (event: MediaQueryListEvent) => setIsWide(event.matches);
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
   }, []);
 
   return (
-    <div data-testid="google-signin-float" className={`fixed right-4 top-[calc(env(safe-area-inset-top,0px)_+_76px)] z-20 w-11 sm:right-6 lg:right-8 lg:top-[calc(env(safe-area-inset-top,0px)_+_128px)] lg:w-[220px] ${className}`}>
+    <div data-testid="google-signin-nav" className={`relative flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/25 ${className}`}>
       <Script
         id="google-identity-services"
         src="https://accounts.google.com/gsi/client?hl=en"
@@ -132,13 +134,11 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
         onReady={() => setScriptReady(true)}
         onError={() => setError("Google sign-in could not be loaded.")}
       />
-      <div className="relative flex min-h-11 items-center justify-center lg:block">
-        <div className={`scale-110 lg:scale-100 ${loading ? "invisible" : ""}`}>
-          <div ref={buttonRef} />
-        </div>
-        {loading ? <div className="absolute inset-0 flex items-center justify-center rounded-full bg-mc-soft text-sm font-semibold text-mc-ink"><span className="lg:hidden">…</span><span className="hidden lg:inline">Signing in with Google…</span></div> : null}
+      <div className="relative flex items-center justify-center">
+        <div ref={buttonRef} className={loading ? "invisible" : ""} aria-busy={loading} />
+        {loading ? <div className="absolute inset-0 flex items-center justify-center rounded-full bg-mc-ink/90 text-sm font-semibold text-white">…</div> : null}
       </div>
-      {error || !config.google.clientId ? <p role="alert" className="absolute right-0 top-full mt-2 w-max max-w-[min(16rem,calc(100vw-2rem))] rounded-full bg-mc-soft/95 px-3 py-2 text-sm font-semibold text-mc-ink shadow-card">{error || "Google sign-in is not configured."}</p> : null}
+      {error || !config.google.clientId ? <p role="alert" className="absolute right-0 top-full z-40 mt-2 w-max max-w-[min(16rem,calc(100vw-2rem))] rounded-full bg-mc-soft px-3 py-2 text-sm font-semibold text-mc-ink shadow-card">{error || "Google sign-in is not configured."}</p> : null}
     </div>
   );
 }
