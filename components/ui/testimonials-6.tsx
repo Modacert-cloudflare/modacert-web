@@ -46,6 +46,7 @@ export function TestimonialsSection() {
     <section className="review-section section-pad border-t border-mc-muted bg-mc-soft px-4 sm:px-6 lg:px-8" aria-labelledby="sample-comments-heading">
       <div className="mx-auto max-w-7xl">
         <h2 id="sample-comments-heading" className="section-title">What people say.</h2>
+        <p className="mt-3 text-xs text-mc-form-muted">Example comments with stock portraits.</p>
         <label className="review-motion-control mt-4 items-center gap-2 text-sm text-mc-ink">
           <input className="review-motion h-4 w-4 accent-mc-brown" type="checkbox" />
           Play moving reviews
@@ -62,10 +63,7 @@ export function TestimonialsSection() {
                         <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-mc-muted">
                           <Image src={image} alt="" fill sizes="48px" className="object-cover" style={{ objectPosition: position }} />
                         </span>
-                        <span className="flex flex-col">
-                          <cite className="text-sm font-semibold not-italic text-mc-ink">{nickname}</cite>
-                          <span className="text-xs text-mc-form-muted">Illustrative review</span>
-                        </span>
+                        <cite className="text-sm font-semibold not-italic text-mc-ink">{nickname}</cite>
                       </figcaption>
                     </figure>
                   ))}
