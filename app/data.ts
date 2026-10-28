@@ -165,6 +165,6 @@ export const checkoutPhotoSlots: PhotoSlot[] = [
   {
     key: "logo",
     label: "Brand logo",
-    description: "Logo stamp, print, embossing, or hardware logo",
+    description: "Close-up of the logo stamp, embossing, or hardware",
   },
 ];

@@ -286,7 +286,9 @@ body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
 .checkout-intro__inner { width: 100%; padding: clamp(1.5rem, 5vw, 3.4rem); }
 .checkout-intro h1 { font-size: clamp(2.35rem, 6vw, 4.7rem); line-height: 1.03; letter-spacing: -0.025em; }
 .checkout-eyebrow { color: var(--mc-gold-light); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.22em; }
-.checkout-selection { border: 1px solid var(--mc-gold); border-radius: 999px; padding: 0.7rem 1rem; color: var(--mc-gold-light); font-size: 0.85rem; font-weight: 600; }
+.checkout-selection { display: grid; gap: 0.2rem; border: 1px solid var(--mc-gold); border-radius: 10px; padding: 0.65rem 1rem; color: white; }
+.checkout-selection span { color: var(--mc-gold-light); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.checkout-selection strong { font-family: var(--font-display); font-size: 1.2rem; font-weight: 500; line-height: 1.1; }
 .checkout-progress { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; margin: 1.6rem 0; }
 .checkout-progress__step { display: flex; gap: 0.7rem; min-width: 0; border-top: 1px solid color-mix(in srgb, var(--mc-gold) 34%, transparent); padding-top: 0.9rem; color: color-mix(in srgb, white 66%, var(--mc-ink)); font-size: 0.85rem; font-weight: 400; }
 .checkout-progress__step span { color: var(--mc-gold-light); font-family: var(--font-display); font-size: 1rem; }
@@ -344,6 +346,9 @@ body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
 .checkout-actions { border-top: 1px solid var(--mc-muted); background: var(--mc-soft); }
 .checkout-photo { border: 1px solid var(--mc-muted); border-radius: 12px; background: white; }
 .checkout-photo__preview { border-radius: 8px; background: var(--mc-soft); }
+.checkout-photo__example { display: block; background-image: url("/checkout/photo-guide.webp"); background-size: 500% 200%; background-repeat: no-repeat; }
+.checkout-formats summary, .checkout-photo__details summary { width: fit-content; color: var(--mc-brown); text-decoration: underline; text-underline-offset: 2px; }
+.checkout-formats summary:focus-visible, .checkout-photo__details summary:focus-visible { outline: 2px solid var(--mc-brown); outline-offset: 3px; }
 .checkout-payment, .checkout-done, .checkout-dialog { border: 1px solid var(--mc-muted); border-radius: 12px; background: white; }
 .checkout-alert { border: 1px solid var(--mc-orange-dark); border-radius: 10px; background: white; }
 @media (max-width: 639px) {
@@ -353,7 +358,8 @@ body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
   .checkout-header .checkout-brand small { font-size: 0.45rem; }
   .checkout-intro { min-height: 225px; background-position: 65% center; }
   .checkout-intro h1 { font-size: clamp(2rem, 9vw, 2.6rem); }
-  .checkout-selection { padding: 0.45rem 0.7rem; font-size: 0.73rem; }
+  .checkout-selection { padding: 0.5rem 0.7rem; }
+  .checkout-selection strong { font-size: 1rem; }
   .checkout-progress { gap: 0.35rem; margin: 1rem 0; }
   .checkout-progress__step { flex-direction: column; gap: 0.2rem; padding-top: 0.5rem; font-size: 0.65rem; line-height: 1.2; }
   .checkout-progress__step span { font-size: 0.85rem; }
