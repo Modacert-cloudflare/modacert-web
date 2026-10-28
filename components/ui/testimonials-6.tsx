@@ -43,9 +43,13 @@ const columns = [comments.slice(0, 2), comments.slice(2, 4), comments.slice(4, 6
 
 export function TestimonialsSection() {
   return (
-    <section className="section-pad border-t border-mc-muted bg-mc-soft px-4 sm:px-6 lg:px-8" aria-labelledby="sample-comments-heading">
+    <section className="review-section section-pad border-t border-mc-muted bg-mc-soft px-4 sm:px-6 lg:px-8" aria-labelledby="sample-comments-heading">
       <div className="mx-auto max-w-7xl">
         <h2 id="sample-comments-heading" className="section-title">What people say.</h2>
+        <label className="review-motion-control mt-4 items-center gap-2 text-sm text-mc-ink">
+          <input className="review-motion h-4 w-4 accent-mc-brown" type="checkbox" />
+          Play moving reviews
+        </label>
         <div className="review-viewport mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" tabIndex={0} aria-label="Sample comments. Hover or focus to pause scrolling.">
           {columns.map((column, index) => (
             <div className={`review-track review-track--${index + 1} min-w-0`} key={index}>
