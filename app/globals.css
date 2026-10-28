@@ -319,21 +319,20 @@ body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
 .checkout-category__label { padding: 0.15rem 0.45rem 0.25rem; font-size: clamp(1rem, 1.7vw, 1.35rem); line-height: 1.2; }
 .checkout-category__status { padding: 0 0.45rem 0.25rem; color: var(--mc-form-muted); font-size: 0.7rem; font-weight: 600; }
 .checkout-brand-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
-.checkout-brand-card { display: flex; min-width: 0; min-height: 155px; flex-direction: column; justify-content: space-between; gap: 0.7rem; border: 1px solid var(--mc-muted); border-radius: 10px; background: linear-gradient(145deg, white, color-mix(in srgb, var(--mc-gold-light) 15%, var(--mc-soft))); padding: 0.85rem; transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease; }
-.checkout-brand-card:hover { border-color: var(--mc-brown-soft); transform: translateY(-2px); }
-.checkout-brand-card.is-selected { border-color: var(--mc-gold); background: var(--mc-ink); color: white; }
-.checkout-brand-card.is-selected:focus-visible { outline-color: var(--mc-gold-light); }
+.checkout-brand-card { position: relative; display: flex; min-width: 0; min-height: 175px; flex-direction: column; justify-content: space-between; gap: 0.4rem; overflow: hidden; border: 1px solid var(--mc-muted); border-radius: 10px; background: color-mix(in srgb, var(--mc-gold-light) 12%, white); padding: 0.85rem; transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease; }
+.checkout-brand-card:hover { border-color: var(--mc-brown-soft); background: white; transform: translateY(-2px); }
+.checkout-brand-card.is-selected { border-color: var(--mc-brown); background: white; }
 .checkout-brand-card__top, .checkout-brand-card__fee { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; }
+.checkout-brand-card__top, .checkout-brand-card__name, .checkout-brand-card__fee { position: relative; z-index: 1; }
 .checkout-brand-card__top { color: var(--mc-brown-soft); font-size: 0.7rem; letter-spacing: 0.12em; }
-.checkout-brand-card.is-selected .checkout-brand-card__top { color: var(--mc-gold-light); }
 .checkout-brand-card__arrow { display: grid; width: 1.8rem; height: 1.8rem; flex: none; place-items: center; border: 1px solid var(--mc-muted); border-radius: 50%; color: var(--mc-brown); font-size: 1.1rem; letter-spacing: 0; transition: background-color 180ms ease, border-color 180ms ease; }
 .checkout-brand-card:hover .checkout-brand-card__arrow { border-color: var(--mc-gold); background: var(--mc-gold-light); }
-.checkout-brand-card.is-selected .checkout-brand-card__arrow { border-color: var(--mc-gold); color: var(--mc-gold-light); }
-.checkout-brand-card__name { font-family: var(--font-display); font-size: clamp(1.25rem, 2.2vw, 1.7rem); line-height: 1.08; overflow-wrap: anywhere; }
-.checkout-brand-card__fee { border-top: 1px solid var(--mc-muted); padding-top: 0.6rem; color: var(--mc-form-muted); font-size: 0.7rem; }
+.checkout-brand-card__mark { position: absolute; inset: 2.5rem 0.85rem 4.1rem; }
+.checkout-brand-card__mark img { object-fit: contain; mix-blend-mode: multiply; }
+.checkout-brand-card__mark.is-pale img { filter: grayscale(1) brightness(0); }
+.checkout-brand-card__name { margin-top: auto; font-size: 0.8rem; font-weight: 600; line-height: 1.2; overflow-wrap: anywhere; }
+.checkout-brand-card__fee { border-top: 1px solid var(--mc-muted); padding-top: 0.45rem; color: var(--mc-form-muted); font-size: 0.7rem; }
 .checkout-brand-card__fee strong { color: var(--mc-ink); font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
-.checkout-brand-card.is-selected .checkout-brand-card__fee { border-color: var(--mc-brown-soft); color: var(--mc-gold-light); }
-.checkout-brand-card.is-selected .checkout-brand-card__fee strong { color: white; }
 .nfc-example-choice { min-width: 0; overflow: hidden; border: 2px solid var(--mc-muted); border-radius: 12px; background: var(--mc-soft); transition: border-color 220ms ease, background-color 220ms ease; }
 .nfc-example-choice:hover, .nfc-example-choice.is-selected { border-color: var(--mc-brown); }
 .nfc-example-choice__photo { position: relative; display: block; width: 100%; aspect-ratio: 3 / 2; overflow: hidden; background: var(--mc-ink); }
@@ -380,7 +379,7 @@ body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
   .nfc-example-choice__content { min-height: 94px; padding: 0.75rem; }
 }
 @media (max-width: 359px) { .checkout-brand-grid { grid-template-columns: 1fr; } }
-@media (min-width: 640px) { .checkout-brand-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .checkout-brand-card { min-height: 175px; padding: 1.1rem; } }
+@media (min-width: 640px) { .checkout-brand-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .checkout-brand-card { min-height: 190px; padding: 1.1rem; } }
 @media (min-width: 1024px) { .checkout-brand-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (pointer: coarse) { input:not([type="file"]), textarea, select { font-size: 1rem; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }

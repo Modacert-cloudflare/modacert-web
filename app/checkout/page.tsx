@@ -21,6 +21,10 @@ const nfcExamples = [
   { value: "with-nfc", title: "I see a chip", detail: "A small tag or contactless mark near the inner label.", image: "/checkout/nfc-visible.webp", alt: "Example handbag interior with a visible contactless chip beside the inner label" },
   { value: "without-nfc", title: "🤷 I can't find a chip", detail: "No chip or contactless mark is visible. Choose this if unsure.", image: "/checkout/nfc-not-visible.webp", alt: "Example handbag interior with a plain label and no visible chip" },
 ] as const;
+const existingBrandLogos = new Set(["gucci", "louis-vuitton", "chanel", "hermes", "prada", "dior"]);
+const checkoutBrandLogos = new Set([
+  "balenciaga", "bottega-veneta", "fendi", "celine", "saint-laurent", "goyard", "loewe", "miu-miu", "delvaux", "moynat", "bvlgari", "chloe", "valentino", "coach", "michael-kors", "tory-burch", "kate-spade", "marc-jacobs", "mcm", "versace", "burberry", "givenchy", "ferragamo", "alexander-mcqueen", "fossil", "guess", "calvin-klein", "tommy-hilfiger", "diesel",
+]);
 
 function useHydrated() { return useSyncExternalStore(emptySubscribe, () => true, () => false); }
 function formatPrice(value: string | number | null | undefined) {
@@ -219,7 +223,15 @@ export default function CheckoutPage() {
 function BrandPicker({ brands, selected, loading, onSelect }: { brands: Brand[]; selected: Brand | null; loading: boolean; onSelect: (brand: Brand) => void }) {
   const [query, setQuery] = useState("");
   const filtered = brands.filter((brand) => brand.name.toLowerCase().includes(query.trim().toLowerCase()));
-  return <div className="mt-6"><div className="flex max-w-xl items-end justify-between gap-3"><label htmlFor="checkout-brand-search" className="block text-sm font-semibold">Find your brand</label>{!loading ? <span className="text-xs text-mc-form-muted">{filtered.length} {filtered.length === 1 ? "brand" : "brands"}</span> : null}</div><input id="checkout-brand-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search supported brands" className="checkout-field mt-2 min-h-12 w-full max-w-xl px-4 text-base" />{loading ? <p className="mt-5 text-sm" role="status">Loading brands…</p> : null}{!loading && filtered.length ? <div className="checkout-brand-grid mt-6">{filtered.map((brand, index) => <button key={brand.id} type="button" aria-pressed={selected?.id === brand.id} onClick={() => onSelect(brand)} className={cx("checkout-brand-card text-left", selected?.id === brand.id && "is-selected")}><span className="checkout-brand-card__top"><span>{String(index + 1).padStart(2, "0")}</span><span className="checkout-brand-card__arrow" aria-hidden="true">↗</span></span><span className="checkout-brand-card__name">{brand.name}</span><span className="checkout-brand-card__fee"><span>Review fee</span><strong>{formatPrice(brand.price) ?? "At checkout"}</strong></span></button>)}</div> : null}{!loading && !filtered.length ? <p className="mt-5 text-sm">No matching brand. <a href="mailto:modacert.support@gmail.com" className="underline">Ask about your item</a>.</p> : null}</div>;
+  return <div className="mt-6"><div className="flex max-w-xl items-end justify-between gap-3"><label htmlFor="checkout-brand-search" className="block text-sm font-semibold">Find your brand</label>{!loading ? <span className="text-xs text-mc-form-muted">{filtered.length} {filtered.length === 1 ? "brand" : "brands"}</span> : null}</div><input id="checkout-brand-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search supported brands" className="checkout-field mt-2 min-h-12 w-full max-w-xl px-4 text-base" />{loading ? <p className="mt-5 text-sm" role="status">Loading brands…</p> : null}{!loading && filtered.length ? <div className="checkout-brand-grid mt-6">{filtered.map((brand, index) => {
+    const logo = existingBrandLogos.has(brand.slug) ? `/brands/${brand.slug}.svg` : checkoutBrandLogos.has(brand.slug) ? `/brands/checkout/${brand.slug}.png` : null;
+    return <button key={brand.id} type="button" aria-pressed={selected?.id === brand.id} onClick={() => onSelect(brand)} className={cx("checkout-brand-card text-left", selected?.id === brand.id && "is-selected")}>
+      <span className="checkout-brand-card__top"><span>{String(index + 1).padStart(2, "0")}</span><span className="checkout-brand-card__arrow" aria-hidden="true">↗</span></span>
+      {logo ? <span className={cx("checkout-brand-card__mark", ["bottega-veneta", "goyard", "chloe"].includes(brand.slug) && "is-pale")} aria-hidden="true"><Image src={logo} alt="" fill unoptimized sizes="(min-width: 1024px) 240px, (min-width: 640px) 30vw, 50vw" /></span> : null}
+      <span className="checkout-brand-card__name">{brand.name}</span>
+      <span className="checkout-brand-card__fee"><span>Review fee</span><strong>{formatPrice(brand.price) ?? "At checkout"}</strong></span>
+    </button>;
+  })}</div> : null}{!loading && !filtered.length ? <p className="mt-5 text-sm">No matching brand. <a href="mailto:modacert.support@gmail.com" className="underline">Ask about your item</a>.</p> : null}</div>;
 }
 
 function PhotoInput({ slot, index, file, disabled, onSelect }: { slot: PhotoSlot; index: number; file: File | null | undefined; disabled: boolean; onSelect: (file: File | null) => void }) {
