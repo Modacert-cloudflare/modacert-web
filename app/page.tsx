@@ -4,7 +4,7 @@ import { ArrowRight, Award, Globe2, ScanSearch, ShieldCheck } from "lucide-react
 import { AppFrame, ButtonLink } from "./components";
 import { BrandDirectory } from "./brand-directory";
 import { HomeScrollScenes } from "./home-scroll-scenes";
-import { CertificateCarousel } from "./certificate-carousel";
+import CarouselStacked from "@/components/ui/carousel-07";
 import { TestimonialsSection } from "@/components/ui/testimonials-6";
 
 const inspectionDetails = [
@@ -45,8 +45,8 @@ export default function Home() {
 
     <section className="home-certificate px-4 text-white sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2 lg:items-center lg:gap-16">
-        <div><h2 className="section-title text-white">See what you receive.</h2><p className="mt-4 max-w-md leading-7 text-white/80">A digital certificate records the outcome and the details of your reviewed item.</p><p className="mt-5 text-sm text-white/70">The preview is illustrative. Your result depends on your item and the expert’s assessment.</p></div>
-        <CertificateCarousel />
+        <div><h2 className="section-title text-white">Explore the collection.</h2><p className="mt-4 max-w-md leading-7 text-white/80">Browse every item category in ModaCert.</p><p className="mt-5 text-sm text-white/70">Handbags are available for expert review now. Other categories are coming soon.</p></div>
+        <CarouselStacked />
       </div>
     </section>
 
