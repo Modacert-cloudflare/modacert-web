@@ -65,11 +65,7 @@ export function TestimonialsSection() {
       <div className="mx-auto max-w-7xl">
         <h2 id="sample-comments-heading" className="section-title">What people say.</h2>
         <p className="mt-3 text-xs text-mc-form-muted">Example comments with stock portraits.</p>
-        <label className="review-motion-control mt-4 items-center gap-2 text-sm text-mc-ink">
-          <input className="review-motion h-4 w-4 accent-mc-brown" type="checkbox" />
-          Play moving reviews
-        </label>
-        <div className="review-viewport mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" tabIndex={0} aria-label="Sample comments. Hover or focus to pause scrolling.">
+        <div className="review-viewport mt-9 grid gap-4 md:grid-cols-2 lg:grid-cols-3" tabIndex={0} aria-label="Example comments. Hover or focus to pause scrolling.">
           {columns.map((column, index) => (
             <div className={`review-track review-track--${index + 1} min-w-0`} key={index}>
               {[false, true].map((copy) => (
