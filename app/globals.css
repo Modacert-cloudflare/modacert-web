@@ -170,7 +170,18 @@ p { text-wrap: pretty; }
 .home-process__content { position: relative; z-index: 1; }
 .home-certificate { position: relative; padding-block: clamp(9rem, 13vw, 13rem); background-color: var(--mc-ink); background-image: linear-gradient(to bottom, var(--mc-soft), transparent 14%, transparent 86%, var(--mc-soft)), linear-gradient(color-mix(in srgb, var(--mc-ink) 82%, transparent), color-mix(in srgb, var(--mc-ink) 82%, transparent)), url("/landing/atelier-desktop.jpg"); background-position: center; background-size: cover; }
 .home-certificate > div, .home-final-cta > div { position: relative; z-index: 1; }
-.home-faq { background: var(--mc-soft); }
+.review-track, .review-cycle { display: contents; }
+.review-cycle--copy { display: none; }
+@media (min-width: 1024px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .review-viewport { height: 34rem; overflow: hidden; mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); }
+  .review-track { display: flex; min-height: max-content; flex-direction: column; animation: review-roll 26s linear infinite; }
+  .review-track--2 { animation-duration: 31s; }
+  .review-track--3 { animation-duration: 28s; }
+  .review-cycle { display: grid; flex: none; gap: 1rem; padding-bottom: 1rem; }
+  .review-cycle--copy { display: grid; }
+  .review-viewport:hover .review-track, .review-viewport:focus-visible .review-track { animation-play-state: paused; }
+}
+@keyframes review-roll { to { transform: translateY(-50%); } }
 .home-final-cta { position: relative; padding-block: clamp(8rem, 14vw, 12rem); background-color: var(--mc-ink); background-image: linear-gradient(to bottom, var(--mc-soft), transparent 24%, transparent 76%, var(--mc-soft)), linear-gradient(color-mix(in srgb, var(--mc-ink) 78%, transparent), color-mix(in srgb, var(--mc-ink) 78%, transparent)), url("/landing/atelier-desktop.jpg"); background-position: center; background-size: cover; }
 body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
 .home-hero__eyebrow { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.27em; white-space: nowrap; }
