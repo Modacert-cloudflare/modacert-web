@@ -5,6 +5,7 @@ import { AppFrame, ButtonLink } from "./components";
 import { BrandDirectory } from "./brand-directory";
 import { HomeScrollScenes } from "./home-scroll-scenes";
 import { CertificateCarousel } from "./certificate-carousel";
+import { TestimonialsSection } from "@/components/ui/testimonials-6";
 
 const inspectionDetails = [
   { label: "Stitching", className: "stitching" },
@@ -59,6 +60,8 @@ export default function Home() {
     </section>
 
     <section id="brands" className="brand-showcase-section"><BrandDirectory compact /></section>
+
+    <TestimonialsSection />
 
     <section className="home-faq section-pad px-4 sm:px-6 lg:px-8"><div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2 lg:gap-16"><div><h2 className="section-title">Before you submit.</h2><p className="mt-4 max-w-md text-mc-form-muted">Check the price and photo requirements before you pay.</p><ButtonLink href="/rates" tone="light" className="mt-6">View current prices</ButtonLink></div><div className="divide-y divide-mc-muted border-y border-mc-muted"><details className="py-4"><summary className="min-h-11 cursor-pointer font-semibold">When do I pay?</summary><p className="pb-2 text-sm leading-6 text-mc-form-muted">After you choose a brand and upload the required photos. Your price is shown before payment.</p></details><details className="py-4"><summary className="min-h-11 cursor-pointer font-semibold">What if my photos are unclear?</summary><p className="pb-2 text-sm leading-6 text-mc-form-muted">Use the example for each view before uploading. If a specialist needs more detail after submission, they may request additional photos.</p></details><details className="py-4"><summary className="min-h-11 cursor-pointer font-semibold">How long does review take?</summary><p className="pb-2 text-sm leading-6 text-mc-form-muted">Review time varies by item and photo quality. A fixed turnaround is not currently offered.</p></details></div></div></section>
 
