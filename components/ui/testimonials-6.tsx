@@ -4,42 +4,60 @@ const comments = [
   {
     nickname: "Ari",
     quote: "I like knowing the price before I start. It makes the whole thing feel easier to plan.",
-    image: "/user-review/christina-wocintechchat-com-m-0Zx1bDv5BNY-unsplash.jpg",
+    image: "/user-review/christina-wocintechchat-com-m-0Zx1bDv5BNY-unsplash.webp",
     position: "50% 35%",
   },
   {
     nickname: "Mina",
     quote: "The photo guide is the part I’d use most. I never know which details are worth showing.",
-    image: "/user-review/h-ng-ph-m-nX8P-y9uVac-unsplash.jpg",
+    image: "/user-review/h-ng-ph-m-nX8P-y9uVac-unsplash.webp",
     position: "50% 44%",
   },
   {
     nickname: "Leo",
     quote: "It helps to see the steps up front. I’d rather know what happens after I send my photos.",
-    image: "/user-review/luis-villasmil-hh3ViD0r0Rc-unsplash.jpg",
+    image: "/user-review/luis-villasmil-hh3ViD0r0Rc-unsplash.webp",
     position: "50% 40%",
   },
   {
     nickname: "Rae",
     quote: "The certificate looks useful for keeping with the rest of my bag’s paperwork.",
-    image: "/user-review/michael-dam-mEZ3PoFGs_k-unsplash.jpg",
+    image: "/user-review/michael-dam-mEZ3PoFGs_k-unsplash.webp",
     position: "50% 35%",
   },
   {
     nickname: "Jules",
     quote: "I can check the brands first and decide whether it’s worth starting. That’s a nice touch.",
-    image: "/user-review/good-faces-xmSWVeGEnJw-unsplash.jpg",
+    image: "/user-review/good-faces-xmSWVeGEnJw-unsplash.webp",
     position: "50% 36%",
   },
   {
     nickname: "Ellie",
     quote: "I’d feel better having the item details and the result together in one place.",
-    image: "/user-review/jeffery-erhunse-Z9lbmEjyYjU-unsplash.jpg",
+    image: "/user-review/jeffery-erhunse-Z9lbmEjyYjU-unsplash.webp",
     position: "50% 45%",
+  },
+  {
+    nickname: "Nia",
+    quote: "It's reassuring to see what the review covers before I decide to send anything.",
+    image: "/user-review/jake-nackos-IF9TK5Uy-KI-unsplash.webp",
+    position: "50% 35%",
+  },
+  {
+    nickname: "Sam",
+    quote: "I’d check the brand list first. It makes it easier to know if my item is supported.",
+    image: "/user-review/vince-fleming-j3lf-Jn6deo-unsplash.webp",
+    position: "50% 40%",
+  },
+  {
+    nickname: "Owen",
+    quote: "Having a photo checklist right there would help me prepare everything before I start.",
+    image: "/user-review/vicky-hladynets-C8Ta0gwPbQg-unsplash.webp",
+    position: "50% 40%",
   },
 ];
 
-const columns = [comments.slice(0, 2), comments.slice(2, 4), comments.slice(4, 6)];
+const columns = [comments.slice(0, 3), comments.slice(3, 6), comments.slice(6, 9)];
 
 export function TestimonialsSection() {
   return (
