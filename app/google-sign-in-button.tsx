@@ -5,7 +5,7 @@ import Script from "next/script";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { loginWithGoogle } from "./_lib/api";
-import { consumeAuthReturnPath, saveAuth } from "./_lib/auth";
+import { consumeAuthReturnPath, saveAuth, type AuthUser } from "./_lib/auth";
 import { config } from "./_lib/config";
 
 type GoogleCredentialResponse = {
@@ -57,7 +57,7 @@ function messageFromError(error: unknown) {
   return error instanceof Error ? error.message : "Google sign-in failed.";
 }
 
-export function GoogleSignInButton({ className = "" }: { className?: string }) {
+export function GoogleSignInButton({ className = "", checkout = false, onSuccess }: { className?: string; checkout?: boolean; onSuccess?: (token: string, user: AuthUser) => void }) {
   const router = useRouter();
   const buttonRef = useRef<HTMLDivElement>(null);
   const initializedRef = useRef(false);
@@ -75,13 +75,14 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
     try {
       const auth = await loginWithGoogle(response.credential);
       saveAuth(auth.accessToken, auth.user, false);
-      router.replace(consumeAuthReturnPath(), { transitionTypes: ["nav-forward"] });
+      if (onSuccess) onSuccess(auth.accessToken, auth.user);
+      else router.replace(consumeAuthReturnPath(), { transitionTypes: ["nav-forward"] });
     } catch (authError) {
       setError(messageFromError(authError));
       submittingRef.current = false;
       setLoading(false);
     }
-  }, [router]);
+  }, [onSuccess, router]);
 
   const renderButton = useCallback(() => {
     const buttonElement = buttonRef.current;
@@ -98,7 +99,7 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
         ux_mode: "popup",
       });
     }
-    window.google.accounts.id.renderButton(buttonElement, isWide ? {
+    window.google.accounts.id.renderButton(buttonElement, checkout || isWide ? {
       type: "standard",
       theme: "filled_black",
       size: "large",
@@ -106,13 +107,13 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
       shape: "pill",
       logo_alignment: "left",
       locale: "en",
-      width: 200,
+      width: checkout ? 240 : 200,
     } : {
       type: "icon",
       theme: "filled_black",
       size: "large",
     });
-  }, [handleCredential, isWide]);
+  }, [checkout, handleCredential, isWide]);
 
   useEffect(() => {
     if (scriptReady) renderButton();
@@ -126,7 +127,7 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
   }, []);
 
   return (
-    <div data-testid="google-signin-nav" className={`relative flex min-h-11 min-w-11 items-center justify-center rounded-full border border-white/25 ${className}`}>
+    <div data-testid={checkout ? "google-signin-checkout" : "google-signin-nav"} className={`relative flex min-h-11 min-w-11 items-center ${checkout ? "flex-col items-start justify-center" : "justify-center rounded-full border border-white/25"} ${className}`}>
       <Script
         id="google-identity-services"
         src="https://accounts.google.com/gsi/client?hl=en"
@@ -138,7 +139,7 @@ export function GoogleSignInButton({ className = "" }: { className?: string }) {
         <div ref={buttonRef} className={loading ? "invisible" : ""} aria-busy={loading} />
         {loading ? <div className="absolute inset-0 flex items-center justify-center rounded-full bg-mc-ink/90 text-sm font-semibold text-white">…</div> : null}
       </div>
-      {error || !config.google.clientId ? <p role="alert" className="absolute right-0 top-full z-40 mt-2 w-max max-w-[min(16rem,calc(100vw-2rem))] rounded-full bg-mc-soft px-3 py-2 text-sm font-semibold text-mc-ink shadow-card">{error || "Google sign-in is not configured."}</p> : null}
+      {error || !config.google.clientId ? <p role="alert" className={`${checkout ? "mt-2" : "absolute right-0 top-full z-40 mt-2 w-max max-w-[min(16rem,calc(100vw-2rem))] rounded-full bg-mc-soft px-3 py-2 shadow-card"} text-sm font-semibold text-mc-ink`}>{error || "Google sign-in is not configured."}</p> : null}
     </div>
   );
 }

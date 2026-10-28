@@ -37,3 +37,11 @@ test("authentication return paths cannot leave the site or loop through sign in"
     assert.equal(auth.consumeAuthReturnPath(), "/checkout");
   }
 });
+
+test("a Google session keeps the account available for checkout", () => {
+  const auth = loadAuth();
+  const user = { id: "user-1", fullName: "Alex Chen", email: "alex@example.com", role: "customer" };
+  auth.saveAuth("google-access-token", user, false);
+  assert.equal(auth.getStoredToken(), "google-access-token");
+  assert.deepEqual(JSON.parse(JSON.stringify(auth.getStoredUser())), user);
+});
