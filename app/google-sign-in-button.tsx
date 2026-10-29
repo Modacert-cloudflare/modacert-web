@@ -108,7 +108,7 @@ export function GoogleSignInButton({ className = "", checkout = false, onSuccess
       shape: "pill",
       logo_alignment: "left",
       locale: "en",
-      width: checkout ? 240 : 200,
+      width: checkout ? Math.min(buttonElement.clientWidth, 400) : 200,
     } : {
       type: "icon",
       theme: "filled_black",
@@ -119,7 +119,11 @@ export function GoogleSignInButton({ className = "", checkout = false, onSuccess
 
   useEffect(() => {
     if (scriptReady) renderButton();
-  }, [renderButton, scriptReady]);
+    if (!scriptReady || !checkout || !buttonRef.current) return;
+    const observer = new ResizeObserver(renderButton);
+    observer.observe(buttonRef.current);
+    return () => observer.disconnect();
+  }, [checkout, renderButton, scriptReady]);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1280px)");
@@ -129,7 +133,7 @@ export function GoogleSignInButton({ className = "", checkout = false, onSuccess
   }, []);
 
   return (
-    <div data-testid={checkout ? "google-signin-checkout" : "google-signin-nav"} className={`relative flex min-h-11 min-w-11 items-center ${checkout ? "flex-col justify-center" : "justify-center rounded-full border border-white/25"} ${className}`}>
+    <div data-testid={checkout ? "google-signin-checkout" : "google-signin-nav"} className={`relative flex min-h-11 min-w-11 items-center ${checkout ? "w-full flex-col justify-center" : "justify-center rounded-full border border-white/25"} ${className}`}>
       <Script
         id="google-identity-services"
         src="https://accounts.google.com/gsi/client?hl=en"
@@ -137,8 +141,8 @@ export function GoogleSignInButton({ className = "", checkout = false, onSuccess
         onReady={() => setScriptReady(true)}
         onError={() => setError("Google sign-in could not be loaded.")}
       />
-      <div className="relative flex items-center justify-center">
-        <div ref={buttonRef} className={loading ? "invisible" : ""} aria-busy={loading} />
+      <div className={`relative flex items-center justify-center ${checkout ? "w-full" : ""}`}>
+        <div ref={buttonRef} className={`${checkout ? "w-full" : ""} ${loading ? "invisible" : ""}`} aria-busy={loading} />
         {loading ? <div className="absolute inset-0 flex items-center justify-center rounded-full bg-mc-ink/90 text-sm font-semibold text-white">…</div> : null}
       </div>
       {error || !config.google.clientId ? <p role="alert" className={`${checkout ? "mt-2" : "absolute right-0 top-full z-40 mt-2 w-max max-w-[min(16rem,calc(100vw-2rem))] rounded-full bg-mc-soft px-3 py-2 shadow-card"} text-sm font-semibold text-mc-ink`}>{error || "Google sign-in is not configured."}</p> : null}

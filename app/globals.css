@@ -411,8 +411,9 @@ body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
   .nfc-example-choice__photo { aspect-ratio: 2 / 1; }
   .nfc-example-choice__content { min-height: 94px; padding: 0.75rem; }
 }
-@media (min-width: 640px) { .checkout-featured-brands { grid-template-columns: repeat(2, minmax(0, 1fr)); } .checkout-brand-directory__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1024px) { .checkout-featured-brands { grid-template-columns: repeat(3, minmax(0, 1fr)); } .checkout-brand-directory__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 640px) { .checkout-featured-brands { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 768px) { .checkout-brand-directory__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; } .checkout-brand-row { min-height: 4.25rem; padding: 0.8rem 1.1rem; font-size: 1.25rem; } }
+@media (min-width: 1024px) { .checkout-featured-brands { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (pointer: coarse) { input:not([type="file"]), textarea, select { font-size: 1rem; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
 @media (prefers-reduced-motion: reduce) {
