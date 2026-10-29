@@ -27,6 +27,7 @@ type GoogleButtonConfiguration =
       type: "icon";
       theme: "filled_black";
       size: "large";
+      shape: "circle";
     };
 
 declare global {
@@ -112,6 +113,7 @@ export function GoogleSignInButton({ className = "", checkout = false, onSuccess
       type: "icon",
       theme: "filled_black",
       size: "large",
+      shape: "circle",
     });
   }, [checkout, handleCredential, isWide]);
 

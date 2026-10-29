@@ -11,7 +11,7 @@ import { config } from "../_lib/config";
 import { clearAuth, getStoredToken, getStoredUser, saveAuth, type AuthUser } from "../_lib/auth";
 import { cx } from "../components";
 import { GoogleSignInButton } from "../google-sign-in-button";
-import { acceptedPhotoInputTypes, acceptedPhotoMimeTypes, categories, checkoutPhotoSlots, figma, type PhotoSlot } from "../data";
+import { acceptedPhotoInputTypes, acceptedPhotoMimeTypes, categories, checkoutPhotoExampleStyle, checkoutPhotoSlots, figma, type PhotoSlot } from "../data";
 
 const emptySubscribe = () => () => {};
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
@@ -311,9 +311,7 @@ function BrandPicker({ brands, selected, loading, view, query, onQueryChange, on
 
 function PhotoInput({ slot, index, file, disabled, onSelect }: { slot: PhotoSlot; index: number; file: File | null | undefined; disabled: boolean; onSelect: (file: File | null) => void }) {
   const [preview, setPreview] = useState("");
-  const exampleStyle = index < 7
-    ? { backgroundPosition: `${(index % 5) * 25}% ${index < 5 ? 0 : 100}%` }
-    : { backgroundImage: "url(/checkout/photo-details.webp)", backgroundSize: "300% 100%", backgroundPosition: `${(index - 7) * 50}% 0` };
+  const exampleStyle = checkoutPhotoExampleStyle(index);
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
   function chooseFile(event: ChangeEvent<HTMLInputElement>) {
     const chosen = event.target.files?.[0] ?? null;

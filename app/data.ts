@@ -168,3 +168,9 @@ export const checkoutPhotoSlots: PhotoSlot[] = [
     description: "Close-up of the logo stamp, embossing, or hardware",
   },
 ];
+
+export function checkoutPhotoExampleStyle(index: number) {
+  return index < 7
+    ? { backgroundPosition: `${(index % 5) * 25}% ${index < 5 ? 0 : 100}%` }
+    : { backgroundImage: "url(/checkout/photo-details.webp)", backgroundSize: "300% 100%", backgroundPosition: `${(index - 7) * 50}% 0` };
+}
