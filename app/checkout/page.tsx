@@ -27,8 +27,8 @@ const FEATURED_BRAND_SLUGS = ["chanel", "gucci", "louis-vuitton", "hermes", "pra
 const featuredBrandImages: Record<string, string> = {
   chanel: "/brands/featured/chanel.png",
   gucci: "/brands/featured/gucci.png",
-  "louis-vuitton": "/brands/featured/louis-vuitton.png",
-  hermes: "/brands/featured/hermes.png",
+  "louis-vuitton": "/brands/featured/louis-vuitton-right.png",
+  hermes: "/brands/featured/hermes-right.png",
   prada: "/brands/featured/prada.png",
   dior: "/brands/featured/dior-charms.png",
 };
