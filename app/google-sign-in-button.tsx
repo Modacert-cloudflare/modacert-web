@@ -74,7 +74,7 @@ export function GoogleSignInButton({ className = "", checkout = false, onSuccess
     setError("");
     try {
       const auth = await loginWithGoogle(response.credential);
-      saveAuth(auth.accessToken, auth.user, false);
+      saveAuth(auth.accessToken, auth.user, true);
       if (onSuccess) onSuccess(auth.accessToken, auth.user);
       else router.replace(consumeAuthReturnPath(), { transitionTypes: ["nav-forward"] });
     } catch (authError) {
@@ -127,7 +127,7 @@ export function GoogleSignInButton({ className = "", checkout = false, onSuccess
   }, []);
 
   return (
-    <div data-testid={checkout ? "google-signin-checkout" : "google-signin-nav"} className={`relative flex min-h-11 min-w-11 items-center ${checkout ? "flex-col items-start justify-center" : "justify-center rounded-full border border-white/25"} ${className}`}>
+    <div data-testid={checkout ? "google-signin-checkout" : "google-signin-nav"} className={`relative flex min-h-11 min-w-11 items-center ${checkout ? "flex-col justify-center" : "justify-center rounded-full border border-white/25"} ${className}`}>
       <Script
         id="google-identity-services"
         src="https://accounts.google.com/gsi/client?hl=en"

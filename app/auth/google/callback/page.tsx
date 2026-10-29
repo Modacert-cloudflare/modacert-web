@@ -35,7 +35,7 @@ function GoogleCallbackContent() {
 
     exchangeGoogleCode(code)
       .then((response) => {
-        saveAuth(response.accessToken, response.user, false);
+        saveAuth(response.accessToken, response.user, true);
         router.replace(consumeAuthReturnPath(), { transitionTypes: ["nav-forward"] });
       })
       .catch((err) => setError(messageFromError(err)));

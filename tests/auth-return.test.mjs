@@ -13,12 +13,12 @@ function storage() {
   };
 }
 
-function loadAuth() {
+function loadAuth(localStorage = storage()) {
   const source = readFileSync(new URL("../app/_lib/auth.ts", import.meta.url), "utf8");
   const { outputText } = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } });
   const exports = {};
   const sessionStorage = storage();
-  runInNewContext(outputText, { exports, window: {}, localStorage: storage(), sessionStorage });
+  runInNewContext(outputText, { exports, window: {}, localStorage, sessionStorage });
   return exports;
 }
 
@@ -44,4 +44,15 @@ test("a Google session keeps the account available for checkout", () => {
   auth.saveAuth("google-access-token", user, false);
   assert.equal(auth.getStoredToken(), "google-access-token");
   assert.deepEqual(JSON.parse(JSON.stringify(auth.getStoredUser())), user);
+});
+
+test("remembered Google sign-in is shared across tabs and cleared on sign out", () => {
+  const sharedStorage = storage();
+  const user = { id: "user-1", fullName: "Alex Chen", email: "alex@example.com", role: "customer" };
+  loadAuth(sharedStorage).saveAuth("google-access-token", user, true);
+  const otherTab = loadAuth(sharedStorage);
+  assert.equal(otherTab.getStoredToken(), "google-access-token");
+  assert.deepEqual(JSON.parse(JSON.stringify(otherTab.getStoredUser())), user);
+  otherTab.clearAuth();
+  assert.equal(loadAuth(sharedStorage).getStoredToken(), null);
 });
