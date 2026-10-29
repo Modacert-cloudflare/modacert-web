@@ -18,14 +18,28 @@ const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const allowedTypes = new Set<string>(acceptedPhotoMimeTypes);
 type Step = "auth" | "brand" | "category" | "nfc" | "upload" | "payment" | "done";
 type NfcMode = "with-nfc" | "without-nfc" | null;
+type BrandView = "featured" | "directory";
 const nfcExamples = [
   { value: "with-nfc", title: "I see a chip", detail: "A small tag or contactless mark near the inner label.", image: "/checkout/nfc-visible.webp", alt: "Example handbag interior with a visible contactless chip beside the inner label" },
   { value: "without-nfc", title: "🤷 I can't find a chip", detail: "No chip or contactless mark is visible. Choose this if unsure.", image: "/checkout/nfc-not-visible.webp", alt: "Example handbag interior with a plain label and no visible chip" },
 ] as const;
-const existingBrandLogos = new Set(["gucci", "louis-vuitton", "chanel", "hermes", "prada", "dior"]);
-const checkoutBrandLogos = new Set([
-  "balenciaga", "bottega-veneta", "fendi", "celine", "saint-laurent", "goyard", "loewe", "miu-miu", "delvaux", "moynat", "bvlgari", "chloe", "valentino", "coach", "michael-kors", "tory-burch", "kate-spade", "marc-jacobs", "mcm", "versace", "burberry", "givenchy", "ferragamo", "alexander-mcqueen", "fossil", "guess", "calvin-klein", "tommy-hilfiger", "diesel",
-]);
+const FEATURED_BRAND_SLUGS = ["chanel", "gucci", "louis-vuitton", "hermes", "prada", "dior"];
+const featuredBrandImages: Record<string, string> = {
+  "louis-vuitton": "/figma/rate-lv-bag.png",
+  hermes: "/figma/rate-hermes-birkin.png",
+};
+const brandCollator = new Intl.Collator("en", { sensitivity: "base" });
+function normalizeBrandName(value: string) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+function sortBrandsByName(brands: Brand[]) {
+  return [...brands].sort((a, b) => brandCollator.compare(a.name, b.name));
+}
+function getFeaturedBrands(brands: Brand[]) {
+  const preferred = FEATURED_BRAND_SLUGS.map((slug) => brands.find((brand) => brand.slug === slug)).filter((brand): brand is Brand => Boolean(brand));
+  const remaining = sortBrandsByName(brands.filter((brand) => !preferred.some((item) => item.id === brand.id)));
+  return [...preferred, ...remaining].slice(0, 6);
+}
 
 function useHydrated() { return useSyncExternalStore(emptySubscribe, () => true, () => false); }
 function formatPrice(value: string | number | null | undefined) {
@@ -51,6 +65,8 @@ export default function CheckoutPage() {
   const [brandsLoading, setBrandsLoading] = useState(true);
   const [brandRetry, setBrandRetry] = useState(0);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
+  const [brandView, setBrandView] = useState<BrandView>("featured");
+  const [brandQuery, setBrandQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [nfcMode, setNfcMode] = useState<NfcMode>(null);
   const [nfcAdvancing, setNfcAdvancing] = useState(false);
@@ -70,6 +86,7 @@ export default function CheckoutPage() {
   const uploadedKeys = useRef<Record<string, string>>({});
   const submitting = useRef(false);
   const nfcAdvanceTimer = useRef<number | null>(null);
+  const brandScrollPosition = useRef<number | null>(null);
   const price = formatPrice(confirmedPrice ?? selectedBrand?.price);
   const started = Boolean(token && (selectedBrand || selectedCategory || nfcMode || Object.values(photos).some(Boolean) || requestId));
   const photoCount = checkoutPhotoSlots.filter((slot) => photos[slot.key]).length;
@@ -101,6 +118,19 @@ export default function CheckoutPage() {
   }, [started, step]);
 
   function goTo(next: Step) { if (nfcAdvanceTimer.current !== null) window.clearTimeout(nfcAdvanceTimer.current); nfcAdvanceTimer.current = null; setNfcAdvancing(false); setStep(next); setError(""); window.scrollTo({ top: 0, behavior: "instant" }); }
+  function selectBrand(brand: Brand) {
+    brandScrollPosition.current = window.scrollY;
+    setSelectedBrand(brand); invalidateSubmission(); goTo("category");
+  }
+  function backToBrand() {
+    const position = brandScrollPosition.current;
+    goTo("brand");
+    if (position !== null) requestAnimationFrame(() => window.scrollTo({ top: position, behavior: "instant" }));
+  }
+  function changeBrandView(next: BrandView) {
+    setBrandView(next);
+    requestAnimationFrame(() => document.getElementById("checkout-brand-stage")?.scrollIntoView({ block: "start", behavior: "instant" }));
+  }
   function chooseNfc(value: Exclude<NfcMode, null>) {
     if (nfcAdvanceTimer.current !== null) window.clearTimeout(nfcAdvanceTimer.current);
     setNfcMode(value); setNfcAdvancing(true); invalidateSubmission();
@@ -205,8 +235,8 @@ export default function CheckoutPage() {
       <div className="checkout-surface">
       {error ? <div role="alert" className="checkout-alert mt-5 p-4 text-sm"><p>{error}</p>{step === "brand" ? <button type="button" onClick={() => { setError(""); setBrandRetry((value) => value + 1); }} className="mt-2 min-h-11 font-semibold underline">Retry brands</button> : null}</div> : null}
       {step === "auth" ? <form onSubmit={handleLogin} className="checkout-form mt-7 max-w-lg"><p className="text-sm text-mc-form-muted">Sign in to keep your request linked to your account.</p><label htmlFor="checkout-email" className="mt-5 block text-sm font-semibold">Email address</label><input id="checkout-email" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} className="checkout-field mt-2 min-h-12 w-full px-4 text-base" /><label htmlFor="checkout-password" className="mt-4 block text-sm font-semibold">Password</label><input id="checkout-password" type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} className="checkout-field mt-2 min-h-12 w-full px-4 text-base" /><button type="submit" disabled={loading} className="mt-6 min-h-12 w-full checkout-primary px-5 text-sm font-semibold">{loading ? "Signing in…" : "Sign in and continue"}</button><div className="mt-5 flex items-center gap-3 text-sm text-mc-form-muted"><span className="h-px flex-1 bg-mc-muted" /><span>or</span><span className="h-px flex-1 bg-mc-muted" /></div><GoogleSignInButton checkout className="mt-5" onSuccess={handleGoogleSignIn} /><Link href="/signup" className="mt-4 flex min-h-11 items-center justify-center text-sm font-semibold underline">Create an account</Link></form> : null}
-      {step === "brand" ? <section className="mt-7"><p className="max-w-xl text-sm leading-6 text-mc-form-muted">Find your brand, then tap it to continue to your item. Prices come from our current catalog.</p><BrandPicker brands={brands} selected={selectedBrand} loading={brandsLoading} onSelect={(brand) => { setSelectedBrand(brand); invalidateSubmission(); goTo("category"); }} /></section> : null}
-      {step === "category" ? <section className="mt-7"><div id="category-availability" className="checkout-availability"><strong>We currently authenticate handbags only.</strong><span>Other categories are coming soon.</span></div><p className="mt-4 text-sm text-mc-form-muted">Select Handbags to continue.</p><div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">{categories.map((category) => <button type="button" key={category.title} disabled={!category.active} aria-describedby="category-availability" onClick={() => { setSelectedCategory(category.title); invalidateSubmission(); }} aria-pressed={selectedCategory === category.title} className={cx("checkout-category group flex flex-col text-left", selectedCategory === category.title && "is-selected")}><span className="checkout-category__image"><Image src={category.image} alt="" width={180} height={140} sizes="(min-width: 768px) 180px, 45vw" unoptimized={category.title === "Handbags" || category.title === "Shoes"} className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105" /></span><span className="checkout-category__label font-display">{category.title}</span><span className="checkout-category__status">{category.active ? "Available now" : "Coming soon"}</span></button>)}</div><StepActions back={() => goTo("brand")} next={() => goTo("nfc")} disabled={!selectedCategory} label="Continue to item details" /></section> : null}
+      {step === "brand" ? <section id="checkout-brand-stage" className="mt-7"><p className="max-w-xl text-sm leading-6 text-mc-form-muted">Select the brand of the item you’d like authenticated.</p><BrandPicker brands={brands} selected={selectedBrand} loading={brandsLoading} view={brandView} query={brandQuery} onQueryChange={setBrandQuery} onViewChange={changeBrandView} onSelect={selectBrand} /></section> : null}
+      {step === "category" ? <section className="mt-7"><div id="category-availability" className="checkout-availability"><strong>We currently authenticate handbags only.</strong><span>Other categories are coming soon.</span></div><p className="mt-4 text-sm text-mc-form-muted">Select Handbags to continue.</p><div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">{categories.map((category) => <button type="button" key={category.title} disabled={!category.active} aria-describedby="category-availability" onClick={() => { setSelectedCategory(category.title); invalidateSubmission(); }} aria-pressed={selectedCategory === category.title} className={cx("checkout-category group flex flex-col text-left", selectedCategory === category.title && "is-selected")}><span className="checkout-category__image"><Image src={category.image} alt="" width={180} height={140} sizes="(min-width: 768px) 180px, 45vw" unoptimized={category.title === "Handbags" || category.title === "Shoes"} className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105" /></span><span className="checkout-category__label font-display">{category.title}</span><span className="checkout-category__status">{category.active ? "Available now" : "Coming soon"}</span></button>)}</div><StepActions back={backToBrand} next={() => goTo("nfc")} disabled={!selectedCategory} label="Continue to item details" /></section> : null}
       {step === "nfc" ? <section className="mt-7">
         <p className="max-w-2xl text-sm leading-6 text-mc-form-muted">Check inside your item near a label or seam. Tap the example closest to what you see. Your item may look different. No scanner is needed.</p>
         <div className="mt-6 grid max-w-4xl grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-5">{nfcExamples.map((example) => <button key={example.value} type="button" aria-pressed={nfcMode === example.value} onClick={() => chooseNfc(example.value)} className={cx("nfc-example-choice text-left", nfcMode === example.value && "is-selected", nfcMode && nfcMode !== example.value && "is-dimmed")}>
@@ -224,18 +254,55 @@ export default function CheckoutPage() {
   </main>;
 }
 
-function BrandPicker({ brands, selected, loading, onSelect }: { brands: Brand[]; selected: Brand | null; loading: boolean; onSelect: (brand: Brand) => void }) {
-  const [query, setQuery] = useState("");
-  const filtered = brands.filter((brand) => brand.name.toLowerCase().includes(query.trim().toLowerCase()));
-  return <div className="mt-6"><div className="flex max-w-xl items-end justify-between gap-3"><label htmlFor="checkout-brand-search" className="block text-sm font-semibold">Find your brand</label>{!loading ? <span className="text-xs text-mc-form-muted">{filtered.length} {filtered.length === 1 ? "brand" : "brands"}</span> : null}</div><input id="checkout-brand-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search supported brands" className="checkout-field mt-2 min-h-12 w-full max-w-xl px-4 text-base" />{loading ? <p className="mt-5 text-sm" role="status">Loading brands…</p> : null}{!loading && filtered.length ? <div className="checkout-brand-grid mt-6">{filtered.map((brand, index) => {
-    const logo = existingBrandLogos.has(brand.slug) ? `/brands/${brand.slug}.svg` : checkoutBrandLogos.has(brand.slug) ? `/brands/checkout/${brand.slug}.png` : null;
-    return <button key={brand.id} type="button" aria-pressed={selected?.id === brand.id} onClick={() => onSelect(brand)} className={cx("checkout-brand-card text-left", selected?.id === brand.id && "is-selected")}>
-      <span className="checkout-brand-card__top"><span>{String(index + 1).padStart(2, "0")}</span><span className="checkout-brand-card__arrow" aria-hidden="true">↗</span></span>
-      {logo ? <span className={cx("checkout-brand-card__mark", ["bottega-veneta", "goyard", "chloe"].includes(brand.slug) && "is-pale")} aria-hidden="true"><Image src={logo} alt="" fill unoptimized sizes="(min-width: 1024px) 240px, (min-width: 640px) 30vw, 50vw" /></span> : null}
-      <span className="checkout-brand-card__name">{brand.name}</span>
-      <span className="checkout-brand-card__fee"><span>Review fee</span><strong>{formatPrice(brand.price) ?? "At checkout"}</strong></span>
-    </button>;
-  })}</div> : null}{!loading && !filtered.length ? <p className="mt-5 text-sm">No matching brand. <a href="mailto:modacert.support@gmail.com" className="underline">Ask about your item</a>.</p> : null}</div>;
+function BrandPicker({ brands, selected, loading, view, query, onQueryChange, onViewChange, onSelect }: { brands: Brand[]; selected: Brand | null; loading: boolean; view: BrandView; query: string; onQueryChange: (value: string) => void; onViewChange: (view: BrandView) => void; onSelect: (brand: Brand) => void }) {
+  const searchRef = useRef<HTMLInputElement>(null);
+  const featured = useMemo(() => getFeaturedBrands(brands), [brands]);
+  const sorted = useMemo(() => sortBrandsByName(brands), [brands]);
+  const normalizedQuery = normalizeBrandName(query);
+  const filtered = normalizedQuery ? sorted.filter((brand) => normalizeBrandName(brand.name).includes(normalizedQuery)) : sorted;
+
+  if (view === "directory") {
+    return <div className="checkout-brand-directory">
+      <button type="button" onClick={() => onViewChange("featured")} className="checkout-brand-directory__back"><span aria-hidden="true">←</span> Back to Featured Brands</button>
+      <h2 className="checkout-brand-directory__title font-display">All Brands</h2>
+      <p className="checkout-brand-directory__intro">Explore the luxury brands we authenticate.</p>
+      <div className="checkout-brand-search">
+        <svg className="checkout-brand-search__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" /><path d="m16.5 16.5 4 4" /></svg>
+        <label htmlFor="checkout-brand-search" className="sr-only">Search brands</label>
+        <input ref={searchRef} id="checkout-brand-search" type="search" autoComplete="off" value={query} onChange={(event) => onQueryChange(event.target.value)} placeholder="Search brands…" />
+      </div>
+      {loading ? <p className="mt-5 text-sm" role="status">Loading brands…</p> : null}
+      {!loading ? <p className="checkout-brand-directory__results" role="status" aria-live="polite">{normalizedQuery ? `${filtered.length} of ${brands.length} brands` : `${brands.length} ${brands.length === 1 ? "brand" : "brands"}`}</p> : null}
+      {!loading && filtered.length ? <div className="checkout-brand-directory__grid">{filtered.map((brand) => <button key={brand.id} type="button" aria-pressed={selected?.id === brand.id} onClick={() => onSelect(brand)} className={cx("checkout-brand-row", selected?.id === brand.id && "is-selected")}><span>{brand.name}</span><span className="checkout-brand-row__arrow" aria-hidden="true">→</span></button>)}</div> : null}
+      {!loading && !filtered.length ? <div className="checkout-brand-empty">
+        <p>{normalizedQuery ? `No brands match “${query.trim()}”.` : "No brands are listed right now."}</p>
+        {normalizedQuery ? <button type="button" onClick={() => { onQueryChange(""); searchRef.current?.focus(); }}>Clear search</button> : null}
+      </div> : null}
+      <p className="checkout-brand-support">Can’t find your brand? <a href="mailto:modacert.support@gmail.com">Contact support</a></p>
+    </div>;
+  }
+
+  return <div className="checkout-brand-picker">
+    <h2 className="checkout-brand-picker__title font-display">Featured brands</h2>
+    {loading ? <p className="mt-5 text-sm" role="status">Loading brands…</p> : null}
+    {!loading && featured.length ? <div className="checkout-featured-brands">{featured.map((brand) => {
+      const image = featuredBrandImages[brand.slug];
+      return <button key={brand.id} type="button" aria-pressed={selected?.id === brand.id} onClick={() => onSelect(brand)} className={cx("checkout-featured-brand", selected?.id === brand.id && "is-selected")}>
+        <span className={cx("checkout-featured-brand__media", !image && "checkout-featured-brand__media--type")}>
+          {image ? <Image src={image} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="checkout-featured-brand__image" /> : <span className="checkout-featured-brand__wordmark font-display" aria-hidden="true">{brand.name}</span>}
+        </span>
+        <span className="checkout-featured-brand__row"><span className="checkout-featured-brand__name">{brand.name}</span><span className="checkout-featured-brand__arrow" aria-hidden="true">→</span></span>
+      </button>;
+    })}</div> : null}
+    {!loading && !featured.length ? <p className="mt-5 text-sm">No brands are listed right now. <a href="mailto:modacert.support@gmail.com" className="underline">Contact support</a>.</p> : null}
+    <div className="checkout-brand-picker__footer">
+      <div className="checkout-brand-picker__browse-group">
+        <button type="button" onClick={() => onViewChange("directory")} className="checkout-brand-picker__browse">Browse All Brands <span aria-hidden="true">→</span></button>
+        {!loading ? <p className="checkout-brand-picker__count">{brands.length} supported {brands.length === 1 ? "brand" : "brands"}</p> : null}
+      </div>
+      <p className="checkout-brand-support">Can’t find your brand? <a href="mailto:modacert.support@gmail.com">Contact support</a></p>
+    </div>
+  </div>;
 }
 
 function PhotoInput({ slot, index, file, disabled, onSelect }: { slot: PhotoSlot; index: number; file: File | null | undefined; disabled: boolean; onSelect: (file: File | null) => void }) {
