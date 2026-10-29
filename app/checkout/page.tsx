@@ -30,7 +30,7 @@ const featuredBrandImages: Record<string, string> = {
   "louis-vuitton": "/figma/rate-lv-bag.png",
   hermes: "/figma/rate-hermes-birkin.png",
   prada: "/brands/featured/prada.png",
-  dior: "/brands/featured/dior.png",
+  dior: "/brands/featured/dior-charms.png",
 };
 const brandCollator = new Intl.Collator("en", { sensitivity: "base" });
 function normalizeBrandName(value: string) {
