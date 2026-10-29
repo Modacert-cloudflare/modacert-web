@@ -25,12 +25,12 @@ const nfcExamples = [
 ] as const;
 const FEATURED_BRAND_SLUGS = ["chanel", "gucci", "louis-vuitton", "hermes", "prada", "dior"];
 const featuredBrandImages: Record<string, string> = {
-  chanel: "/brands/chanel.svg",
-  gucci: "/brands/gucci.svg",
-  "louis-vuitton": "/brands/louis-vuitton.svg",
-  hermes: "/brands/hermes.svg",
-  prada: "/brands/prada.svg",
-  dior: "/brands/dior.svg",
+  chanel: "/brands/featured/chanel.png",
+  gucci: "/brands/featured/gucci.png",
+  "louis-vuitton": "/figma/rate-lv-bag.png",
+  hermes: "/figma/rate-hermes-birkin.png",
+  prada: "/brands/featured/prada.png",
+  dior: "/brands/featured/dior.png",
 };
 const brandCollator = new Intl.Collator("en", { sensitivity: "base" });
 function normalizeBrandName(value: string) {
@@ -293,7 +293,7 @@ function BrandPicker({ brands, selected, loading, view, query, onQueryChange, on
       const image = featuredBrandImages[brand.slug];
       return <button key={brand.id} type="button" aria-pressed={selected?.id === brand.id} onClick={() => onSelect(brand)} className={cx("checkout-featured-brand", selected?.id === brand.id && "is-selected")}>
         <span className={cx("checkout-featured-brand__media", !image && "checkout-featured-brand__media--type")}>
-          {image ? <span className="checkout-featured-brand__logo"><Image src={image} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="checkout-featured-brand__image" /></span> : <span className="checkout-featured-brand__wordmark font-display" aria-hidden="true">{brand.name}</span>}
+          {image ? <span className="checkout-featured-brand__product"><Image src={image} alt="" fill sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" className="checkout-featured-brand__image" /></span> : <span className="checkout-featured-brand__wordmark font-display" aria-hidden="true">{brand.name}</span>}
         </span>
         <span className="checkout-featured-brand__row"><span className="checkout-featured-brand__name">{brand.name}</span><span className="checkout-featured-brand__arrow" aria-hidden="true">→</span></span>
       </button>;
