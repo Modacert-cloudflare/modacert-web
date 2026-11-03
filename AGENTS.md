@@ -18,7 +18,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | Language | TypeScript 5 |
 | Styling | Tailwind CSS v4 (CSS-first config) |
 | HTTP | Axios (two instances — user-service & payment-service) |
-| Payments | PayPal (`@paypal/react-paypal-js`) |
+| Payments | Stripe Checkout |
 | Runtime deps | React 19, axios 1.15 |
 
 ---
@@ -52,9 +52,8 @@ app/
 | Variable | Example | Purpose |
 |---|---|---|
 | `NEXT_PUBLIC_USER_SERVICE_URL` | `http://localhost:3005` | User/auth/brand/upload backend |
-| `NEXT_PUBLIC_PAYMENT_SERVICE_URL` | `http://localhost:3002` | PayPal payment backend |
-| `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | `A...` | PayPal sandbox client ID |
-| `NEXT_PUBLIC_PAYMENT_MODE` | `fake` | `production` and `sandbox` render PayPal Buttons with matching credentials; `fake` renders the fake pay button. Legacy `paypal` retains PayPal behavior. |
+| `NEXT_PUBLIC_PAYMENT_SERVICE_URL` | `http://localhost:3002` | Stripe payment backend |
+
 
 ---
 
@@ -89,8 +88,8 @@ paymentApi ┘
 | `requestPresignUrls(payload)` | POST | user | `/upload/presign` |
 | `uploadToPresignedUrl(url, file)` | PUT | S3 | (presigned URL) |
 | `confirmUpload(requestId)` | POST | user | `/upload/confirm` |
-| `createPayPalOrder(payload)` | POST | payment | `/payments/paypal/create-order` |
-| `capturePayPalOrder(payload)` | POST | payment | `/payments/paypal/capture` |
+| `createStripeCheckoutSession(payload)` | POST | payment | `/payments/stripe/create-session` |
+| `fetchStripeCheckoutStatus(sessionId)` | GET | payment | `/payments/stripe/session/:sessionId` |
 
 ---
 
@@ -160,7 +159,7 @@ paymentApi ┘
 ┌─────┐    ┌───────┐    ┌────────┐    ┌─────────┐    ┌──────┐
 │ Auth │───▶│ Brand │───▶│ Upload │───▶│ Payment │───▶│ Done │
 └─────┘    └───────┘    └────────┘    └─────────┘    └──────┘
-  login      select       presign       PayPal          success
+  login      select       presign       Stripe          success
              brand        + S3          order +         page
                           upload        capture
 ```
@@ -168,9 +167,7 @@ paymentApi ┘
 1. **Auth** — POST `/auth/login` → store token & user
 2. **Brand** — GET `/brands` → user picks one (price shown)
 3. **Upload** — POST `/upload/presign` → PUT to S3 → POST `/upload/confirm`
-4. **Payment** — PayPal Buttons widget → `createPayPalOrder` → user approves in PayPal → `capturePayPalOrder`
-
-Real PayPal mode does not use a payment-service webhook callback. The browser PayPal Buttons `onApprove` handler calls payment-service `/payments/paypal/capture` after the buyer approves the order.
+4. **Payment** — Stripe hosted Checkout → signed webhook → payment queue
 
 Required photos: `front`, `back`, `interior`, `logo`. Optional: `left`, `right`, `top`, `bottom`, `label_tag`, `serial_number`.
 
@@ -191,34 +188,7 @@ Required photos: `front`, `back`, `interior`, `logo`. Optional: `left`, `right`,
 
 - **Zombie Bun processes**: Kill stale `bun` processes before starting services (`pkill -f "bun.*main.ts"`). Multiple processes can bind port 3005 → `CONNECTION_ENDED` errors.
 - **S3 uploads bypass interceptors**: `uploadToPresignedUrl()` uses native `fetch`, not Axios — no loading overlay for direct S3 PUTs.
-- **Payment create-order 500**: A fast `500` from `/payments/paypal/create-order` usually means payment-service is in real PayPal mode but missing runtime PayPal config such as `PAYPAL_CLIENT_SECRET`. This is payment-service runtime env, not a frontend callback bug.
 
----
-
-## Fake Payment Mode
-
-There are two separate payment-mode knobs:
-
-- `NEXT_PUBLIC_PAYMENT_MODE` in this repo controls the checkout UI.
-- `PAYMENT_MODE` in payment-service controls the backend provider.
-
-Use matching modes:
-
-- Production PayPal: set `NEXT_PUBLIC_PAYMENT_MODE=production` in this repo and `PAYMENT_MODE=paypal` plus live credentials and `PAYPAL_BASE_URL=https://api-m.paypal.com` in payment-service.
-- Sandbox PayPal: set `NEXT_PUBLIC_PAYMENT_MODE=sandbox` in this repo and `PAYMENT_MODE=paypal` plus sandbox credentials and `PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com` in payment-service.
-- Fake checkout: set `NEXT_PUBLIC_PAYMENT_MODE=fake` in this repo and `PAYMENT_MODE=fake` in payment-service.
-
-An omitted frontend mode defaults to `production`; legacy `paypal` preserves the PayPal path. Unknown modes are rejected. Set the frontend PayPal client ID and service origins to match the selected environment. Mode changes require restarting development or rebuilding the browser bundle.
-
-When this repo is `fake`, the checkout page shows a test payment button instead of PayPal Buttons. That button still calls `createPayPalOrder()` then `capturePayPalOrder()` against payment-service, so payment-service must also be fake if you want deterministic fake responses and no PayPal API calls.
-
-Do not run this repo in fake mode against a real PayPal payment-service. The fake button has no PayPal buyer approval step, so immediate capture cannot satisfy a real PayPal order flow.
-
-Both fake and real backend modes publish `payment.completed` to the payment queue after successful capture, so downstream processing stays identical when payment-service is configured correctly. The frontend requires `status: "COMPLETED"` and `queued: true` before opening Success.
-
-The route names stay `/payments/paypal/create-order` and `/payments/paypal/capture` in both modes. Route names do not prove whether payment-service is using `FakePayPalService` or real `PayPalService`.
-
-The `PAYMENT_MODE` constant is exported from `app/_lib/api.ts`.
 
 ---
 

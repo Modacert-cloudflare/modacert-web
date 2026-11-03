@@ -348,41 +348,7 @@ export async function confirmUpload(
   return data.data;
 }
 
-export interface CreateOrderResponse {
-  orderId: string;
-  status: string;
-  approvalUrl?: string;
-}
-
-export interface CreateOrderPayload {
-  referenceId: string;
-}
-
-export async function createPayPalOrder(
-  payload: CreateOrderPayload
-): Promise<CreateOrderResponse> {
-  const { data } = await paymentApi.post(
-    config.endpoints.payments.paypal.createOrder,
-    payload
-  );
-  if (!data?.success)
-    throw new Error(data?.error?.message || "Order creation failed");
-  return data.data;
-}
-
-export async function capturePayPalOrder(payload: {
-  orderId: string;
-  referenceId: string;
-}): Promise<{ status: string; paypalStatus: string; queued?: boolean; queueMessageId?: string }> {
-  const { data } = await paymentApi.post(
-    config.endpoints.payments.paypal.capture,
-    payload
-  );
-  if (!data?.success) throw new Error(data?.error?.message || "Capture failed");
-  if (data.data?.status !== "COMPLETED") throw new Error("Payment is not completed");
-  if (data.data.queued !== true) throw new Error("Payment could not be queued for expert review");
-  return data.data;
-}
+export interface CreateOrderPayload { referenceId: string; }
 
 export async function createStripeCheckoutSession(
   payload: CreateOrderPayload
@@ -408,6 +374,3 @@ export async function fetchStripeCheckoutStatus(
   }
   return session;
 }
-
-export const PAYMENT_MODE = config.paymentMode;
-export const PAYMENT_PROVIDER = config.paymentProvider;

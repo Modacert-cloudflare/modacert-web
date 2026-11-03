@@ -4,9 +4,8 @@ import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useRef, useSta
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import axios from "axios";
-import { PAYMENT_MODE, PAYMENT_PROVIDER, capturePayPalOrder, confirmUpload, createPayPalOrder, createStripeCheckoutSession, fetchBrands, login, logoutSession, requestPresignUrls, setAuthToken, uploadToPresignedUrl, type Brand, type PresignResponse } from "../_lib/api";
+import { confirmUpload, createStripeCheckoutSession, fetchBrands, login, logoutSession, requestPresignUrls, setAuthToken, uploadToPresignedUrl, type Brand, type PresignResponse } from "../_lib/api";
 import { config } from "../_lib/config";
 import { clearAuth, getStoredToken, getStoredUser, saveAuth, type AuthUser } from "../_lib/auth";
 import { cx } from "../components";
@@ -195,16 +194,6 @@ export default function CheckoutPage() {
     } catch (cause) { setError(messageFromError(cause, "Upload failed. Check your connection and retry.")); }
     finally { submitting.current = false; setLoading(false); }
   }
-  async function handleFakePayment() {
-    if (submitting.current || !requestId) return;
-    submitting.current = true; setLoading(true); setError("");
-    try {
-      const order = await createPayPalOrder({ referenceId: requestId });
-      await capturePayPalOrder({ orderId: order.orderId, referenceId: requestId });
-      setPaymentCompleted(true); goTo("done");
-    } catch (cause) { setError(messageFromError(cause, "Payment could not be completed. Try again or contact support.")); }
-    finally { submitting.current = false; setLoading(false); }
-  }
   async function handleStripePayment() {
     if (submitting.current || !requestId) return;
     submitting.current = true; setLoading(true); setError("");
@@ -214,19 +203,6 @@ export default function CheckoutPage() {
     } catch (cause) { setError(messageFromError(cause, "Stripe Checkout is unavailable. Try again or contact support.")); }
     finally { submitting.current = false; setLoading(false); }
   }
-  const createPayPal = useCallback(async () => {
-    if (!requestId) throw new Error("No submitted request.");
-    const order = await createPayPalOrder({ referenceId: requestId });
-    return order.orderId;
-  }, [requestId]);
-  const approvePayPal = useCallback(async (data: { orderID: string }) => {
-    if (!requestId) return;
-    setLoading(true); setError("");
-    try { await capturePayPalOrder({ orderId: data.orderID, referenceId: requestId }); setPaymentCompleted(true); setStep("done"); }
-    catch (cause) { setError(messageFromError(cause, "Payment could not be completed. Try again or contact support.")); }
-    finally { setLoading(false); }
-  }, [requestId]);
-
   if (!hydrated) return <main className="checkout-page grid min-h-dvh place-items-center"><p role="status">Loading checkout…</p></main>;
   const stage = step === "brand" || step === "category" || step === "nfc" ? 0 : step === "upload" ? 1 : step === "payment" ? 2 : step === "done" ? 3 : -1;
   const checkoutSteps = ["Brand & item", "Photos", "Payment", "Done"];
@@ -250,7 +226,7 @@ export default function CheckoutPage() {
         <div className="mt-7 flex flex-wrap items-center justify-between gap-3 border-t border-mc-muted pt-4"><button type="button" onClick={() => goTo("category")} className="checkout-back min-h-12 px-5 text-sm font-semibold">Back</button><p role="status" className="text-sm text-mc-form-muted">{nfcAdvancing ? "Continuing to photos…" : "One tap continues to photos"}</p></div>
       </section> : null}
       {step === "upload" ? <section className="mt-7"><div className="flex flex-wrap items-end justify-between gap-2"><div><h2 className="text-xl font-semibold">10 views, one clear review</h2><p className="mt-1 text-sm text-mc-form-muted">Use bright, even light. Examples show framing; your item may differ. Maximum 10 MB per photo.</p><details className="checkout-formats mt-2 text-xs"><summary className="cursor-pointer font-semibold">Supported photo formats <span aria-hidden="true">ⓘ</span></summary><p className="mt-1 text-mc-form-muted">JPEG, PNG, WebP, HEIC, or HEIF.</p></details></div><p role="status" className="text-sm font-semibold">{photoCount} of {checkoutPhotoSlots.length} photos added{loading ? ` · ${uploadedCount} uploaded` : ""}</p></div>{chosenNfcExample ? <div className="nfc-example-recap mt-5 flex items-center gap-3"><div className="nfc-example-recap__photo relative h-16 w-20 shrink-0 overflow-hidden"><Image src={chosenNfcExample.image} alt="" fill unoptimized sizes="80px" className="object-cover" /></div><div className="min-w-0 flex-1"><p className="text-xs font-semibold uppercase tracking-wide text-mc-brown">Your chip choice · example photo</p><p className="mt-1 text-sm font-semibold">{chosenNfcExample.title}</p></div><button type="button" onClick={() => goTo("nfc")} className="min-h-11 px-2 text-sm font-semibold underline">Change</button></div> : null}{photoError ? <p role="alert" className="mt-4 rounded-md bg-white p-3 text-sm text-mc-orange-dark">{photoError}</p> : null}<div className="mt-5 grid gap-3 sm:grid-cols-2">{checkoutPhotoSlots.map((slot, index) => <PhotoInput key={slot.key} slot={slot} index={index} file={photos[slot.key]} disabled={loading} onSelect={(file) => setPhoto(slot.key, file)} />)}</div><p className="mt-5 text-sm text-mc-form-muted">Your chosen photos stay here if an upload fails. Keep this page open while submitting.</p><StepActions back={() => goTo("nfc")} next={handleUpload} disabled={!requiredPhotosReady || loading} label={loading ? `Uploading ${uploadedCount} of 10…` : "Submit photos"} /></section> : null}
-      {step === "payment" && requestId && selectedBrand ? <section className="mt-7 grid gap-7 lg:grid-cols-[1fr_1fr]"><div><h2 className="text-xl font-semibold">What you’re buying</h2><dl className="mt-5 divide-y divide-mc-muted border-y border-mc-muted text-sm"><Detail label="Brand" value={selectedBrand.name} /><Detail label="Item" value={selectedCategory} /><Detail label="Service" value="Expert photo authentication" /><Detail label="Result" value="Digital result and certificate" /><Detail label="Request ID" value={requestId} /></dl><p className="mt-5 text-sm leading-6 text-mc-form-muted">Review begins after payment. Timing varies with the item and photo quality. If more detail is needed, the specialist may request more photos.</p></div><div className="checkout-payment self-start p-5 sm:p-7"><div className="flex justify-between gap-3 border-b border-mc-muted pb-5"><span className="font-semibold">Total in USD</span><strong className="text-2xl">{price ?? "Confirming price"}</strong></div>{PAYMENT_MODE === "fake" ? <><p className="mt-5 text-sm text-mc-form-muted">Test payment. You will not be charged.</p><button type="button" disabled={loading || !price} onClick={handleFakePayment} className="mt-5 min-h-12 w-full checkout-primary px-5 text-sm font-semibold">{loading ? "Processing payment…" : `Test Pay ${price ?? ""}`}</button></> : PAYMENT_PROVIDER === "stripe" ? <><p className="mt-5 text-sm text-mc-form-muted">You’ll complete payment securely on Stripe.</p><button type="button" disabled={loading || !price} onClick={handleStripePayment} className="mt-5 min-h-12 w-full checkout-primary px-5 text-sm font-semibold">{loading ? "Opening secure checkout…" : `Pay ${price ?? ""}`}</button></> : config.paypal.clientId ? <div className="mt-5"><PayPalScriptProvider options={{ clientId: config.paypal.clientId, currency: "USD", intent: "capture" }}><PayPalButtons style={{ layout: "vertical", color: "gold", shape: "pill", label: "pay" }} createOrder={createPayPal} onApprove={approvePayPal} onError={() => setError("PayPal is unavailable. Try again or contact support.")} /></PayPalScriptProvider></div> : <p role="alert" className="mt-5 text-sm">Payment is temporarily unavailable. Please contact support.</p>}<button type="button" onClick={() => goTo("upload")} className="mt-4 min-h-11 text-sm font-semibold underline">Back to photos</button></div></section> : null}
+      {step === "payment" && requestId && selectedBrand ? <section className="mt-7 grid gap-7 lg:grid-cols-[1fr_1fr]"><div><h2 className="text-xl font-semibold">What you’re buying</h2><dl className="mt-5 divide-y divide-mc-muted border-y border-mc-muted text-sm"><Detail label="Brand" value={selectedBrand.name} /><Detail label="Item" value={selectedCategory} /><Detail label="Service" value="Expert photo authentication" /><Detail label="Result" value="Digital result and certificate" /><Detail label="Request ID" value={requestId} /></dl><p className="mt-5 text-sm leading-6 text-mc-form-muted">Review begins after payment. Timing varies with the item and photo quality. If more detail is needed, the specialist may request more photos.</p></div><div className="checkout-payment self-start p-5 sm:p-7"><div className="flex justify-between gap-3 border-b border-mc-muted pb-5"><span className="font-semibold">Total in USD</span><strong className="text-2xl">{price ?? "Confirming price"}</strong></div><><p className="mt-5 text-sm text-mc-form-muted">You’ll complete payment securely on Stripe.</p><button type="button" disabled={loading || !price} onClick={handleStripePayment} className="mt-5 min-h-12 w-full checkout-primary px-5 text-sm font-semibold">{loading ? "Opening secure checkout…" : `Pay ${price ?? ""}`}</button></><button type="button" onClick={() => goTo("upload")} className="mt-4 min-h-11 text-sm font-semibold underline">Back to photos</button></div></section> : null}
       {step === "done" && paymentCompleted ? <section className="checkout-done mt-7 max-w-2xl p-6 sm:p-8"><p className="text-sm font-semibold text-mc-brown">Payment complete · Review queued</p><h2 className="mt-3 font-display text-3xl">Your item is with ModaCert.</h2><p className="mt-3 text-sm leading-6 text-mc-form-muted">A specialist will review your submitted photos. Keep your request ID for support.</p><dl className="mt-5 divide-y divide-mc-muted border-y border-mc-muted text-sm"><Detail label="Request ID" value={requestId ?? ""} /><Detail label="Brand" value={selectedBrand?.name ?? ""} /><Detail label="Paid" value={price ?? ""} /></dl><Link href="/" className="mt-6 inline-flex min-h-12 items-center checkout-primary px-5 text-sm font-semibold">Return home</Link></section> : null}
       </div>
     </div>
