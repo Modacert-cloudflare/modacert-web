@@ -21,8 +21,4 @@ export function AuthField({ id, label, type = "text", value, onChange, autoCompl
 
 export function AuthDivider() { return <div className="my-6 flex items-center gap-3 text-sm text-mc-form-muted"><span className="h-px flex-1 bg-mc-muted" /><span>or</span><span className="h-px flex-1 bg-mc-muted" /></div>; }
 
-export function GoogleButton({ children = "Continue with Google", className = "", loading = false, onClick }: { children?: React.ReactNode; className?: string; loading?: boolean; onClick?: () => void }) {
-  return <button type="button" disabled={loading} onClick={onClick} className={`inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-lg border border-mc-muted bg-white px-4 text-sm font-semibold disabled:opacity-50 ${className}`}><Image src={figma.google} alt="" width={22} height={22} />{loading ? "Connecting to Google…" : children}</button>;
-}
-
 export function AuthPrimaryButton({ children, loading }: { children: React.ReactNode; loading?: boolean }) { return <button type="submit" disabled={loading} className="mt-6 min-h-12 w-full rounded-lg bg-mc-orange px-5 text-sm font-semibold text-white disabled:opacity-50">{children}</button>; }

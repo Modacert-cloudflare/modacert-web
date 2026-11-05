@@ -3,9 +3,10 @@
 import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { getGoogleAuthUrl, login } from "../_lib/api";
+import { login } from "../_lib/api";
 import { consumeAuthReturnPath, saveAuth, getStoredEmail, isRemembered } from "../_lib/auth";
-import { AuthDivider, AuthField, AuthHeading, AuthPrimaryButton, AuthShell, GoogleButton } from "../auth-ui";
+import { AuthDivider, AuthField, AuthHeading, AuthPrimaryButton, AuthShell } from "../auth-ui";
+import { GoogleSignInButton } from "../google-sign-in-button";
 
 function messageFromError(error: unknown) {
   if (axios.isAxiosError(error)) {
@@ -26,7 +27,6 @@ export default function SignInPage() {
   const [remember, setRemember] = useState(() => isRemembered());
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const submittingRef = useRef(false);
 
   async function handleSubmit(event: FormEvent) {
@@ -44,19 +44,6 @@ export default function SignInPage() {
     } finally {
       submittingRef.current = false;
       setLoading(false);
-    }
-  }
-
-  async function handleGoogleAuth() {
-    if (googleLoading) return;
-    setGoogleLoading(true);
-    setError("");
-    try {
-      const url = await getGoogleAuthUrl();
-      window.location.href = url;
-    } catch (err) {
-      setError(messageFromError(err));
-      setGoogleLoading(false);
     }
   }
 
@@ -80,7 +67,7 @@ export default function SignInPage() {
         {error ? <p role="alert" className="mt-4 rounded-lg bg-mc-orange/10 px-4 py-2 text-sm font-semibold text-mc-orange-dark">{error}</p> : null}
         <AuthPrimaryButton loading={loading}>{loading ? "Signing in" : "Sign in"}</AuthPrimaryButton>
         <AuthDivider />
-        <GoogleButton onClick={handleGoogleAuth} loading={googleLoading} />
+        <GoogleSignInButton checkout />
       </form>
     </AuthShell>
   );
