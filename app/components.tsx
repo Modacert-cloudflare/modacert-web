@@ -37,7 +37,7 @@ export function SiteHeader({ hero = false }: { hero?: boolean }) {
             <Menu aria-hidden="true" className="h-6 w-6" />
           </summary>
           <nav aria-label="Mobile navigation" className="absolute right-0 top-[calc(100%+8px)] z-40 flex w-[min(18rem,calc(100vw-2rem))] flex-col gap-1 rounded-xl border border-white/15 bg-mc-ink p-3 text-white shadow-sm">
-            {links.map((item) => <Link key={item.href} href={item.href} className="flex min-h-11 items-center rounded-md px-3 text-sm text-white/90 hover:bg-white/5 hover:text-mc-gold">{item.label}</Link>)}
+            {links.filter((item) => item.href !== "/#how-it-works" && item.href !== "/authenticate").map((item) => <Link key={item.href} href={item.href} className="flex min-h-11 items-center rounded-md px-3 text-sm text-white/90 hover:bg-white/5 hover:text-mc-gold">{item.label}</Link>)}
             <Link href="/signin" className="flex min-h-11 items-center rounded-md px-3 text-sm text-white/90 hover:bg-white/5 hover:text-mc-gold">Sign in</Link>
             <Link href="/certificate" className="button-link mt-2 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/40 px-5 py-3 text-sm font-semibold text-white hover:border-mc-gold hover:text-mc-gold">Get certificate</Link>
             <ButtonLink href="/checkout" tone="gold" className="mt-2 w-full rounded-full">Authenticate an item</ButtonLink>
