@@ -63,6 +63,5 @@ export default function Home() {
 
     <TestimonialsSection />
 
-    <section className="home-final-cta px-4 text-white sm:px-6 lg:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="font-display text-3xl sm:text-4xl">Ready for a clear answer?</h2><p className="mt-2 text-sm text-white/80">Start with your brand. We’ll guide the photos.</p></div><ButtonLink href="/checkout" tone="gold" className="shrink-0 rounded-full">Authenticate an item <ArrowRight aria-hidden="true" className="ml-2 inline h-4 w-4" /></ButtonLink></div></section>
   </AppFrame>;
 }

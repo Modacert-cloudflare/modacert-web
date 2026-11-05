@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export function HomeScrollScenes() {
   useEffect(() => {
-    const scenes = document.querySelectorAll(".home-process, .home-certificate, .inspection-section, .brand-showcase__hero, .home-final-cta");
+    const scenes = document.querySelectorAll(".home-process, .home-certificate, .inspection-section, .brand-showcase__hero");
     if (!("IntersectionObserver" in window)) return;
 
     const observer = new IntersectionObserver((entries) => {

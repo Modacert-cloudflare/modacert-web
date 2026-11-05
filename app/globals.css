@@ -138,6 +138,7 @@ p { text-wrap: pretty; }
 @media (prefers-reduced-motion: reduce) { .brand-card { transition: border-color 180ms ease; } .brand-card:hover { transform: none; } }
 .site-footer { overflow: hidden; border-bottom: 1px solid var(--mc-muted); border-radius: 0 0 1.5rem 1.5rem; }
 .site-footer__top { display: grid; gap: 3rem; padding-bottom: 3.5rem; }
+@media (max-width: 1023px) { .site-footer__top > div:first-child { text-align: center; } .site-footer__top > div:first-child > p, .footer-subscribe { margin-inline: auto; } }
 .site-footer__nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
 .site-footer__nav h2 { margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 600; }
 .site-footer__nav a { display: flex; min-height: 2.75rem; align-items: center; color: var(--mc-form-muted); font-size: 0.86rem; }
@@ -169,7 +170,7 @@ p { text-wrap: pretty; }
 .home-process { position: relative; background-color: var(--mc-soft); background-image: linear-gradient(to bottom, var(--mc-soft), transparent 25%, transparent 75%, var(--mc-soft)), linear-gradient(90deg, color-mix(in srgb, var(--mc-soft) 94%, transparent), color-mix(in srgb, var(--mc-soft) 64%, transparent)), url("/landing/process-scene.webp"); background-position: center; background-size: cover; }
 .home-process__content { position: relative; z-index: 1; }
 .home-certificate { position: relative; padding-block: clamp(9rem, 13vw, 13rem); background-color: var(--mc-ink); background-image: linear-gradient(to bottom, var(--mc-soft), transparent 14%, transparent 86%, var(--mc-soft)), linear-gradient(color-mix(in srgb, var(--mc-ink) 82%, transparent), color-mix(in srgb, var(--mc-ink) 82%, transparent)), url("/landing/atelier-desktop.jpg"); background-position: center; background-size: cover; }
-.home-certificate > div, .home-final-cta > div { position: relative; z-index: 1; }
+.home-certificate > div { position: relative; z-index: 1; }
 .review-viewport { height: 34rem; overflow: hidden; mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); }
 .review-track { display: flex; min-height: max-content; flex-direction: column; animation: review-roll 26s linear infinite; }
 .review-track--2, .review-track--3 { display: none; }
@@ -187,7 +188,6 @@ p { text-wrap: pretty; }
   .review-section .review-track--3 { animation-duration: 28s !important; }
 }
 @keyframes review-roll { to { transform: translateY(-50%); } }
-.home-final-cta { position: relative; padding-block: clamp(8rem, 14vw, 12rem); background-color: var(--mc-ink); background-image: linear-gradient(to bottom, var(--mc-soft), transparent 24%, transparent 76%, var(--mc-soft)), linear-gradient(color-mix(in srgb, var(--mc-ink) 78%, transparent), color-mix(in srgb, var(--mc-ink) 78%, transparent)), url("/landing/atelier-desktop.jpg"); background-position: center; background-size: cover; }
 body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
 .home-hero__eyebrow { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.27em; white-space: nowrap; }
 .home-hero__eyebrow span { margin-inline: 0.55em; }
@@ -276,10 +276,10 @@ body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
   .inspection-detail--hardware { bottom: 9%; left: 39%; }
   .inspection-detail--identity { bottom: 8%; right: 3%; }
 }
-.home-process::before, .home-certificate::before, .home-final-cta::before { position: absolute; inset: 0; z-index: 0; background: var(--mc-soft); content: ""; pointer-events: none; opacity: 0; }
-.home-certificate::before, .home-final-cta::before { background: var(--mc-ink); }
-.home-scene--ready.home-process::before, .home-scene--ready.home-certificate::before, .home-scene--ready.home-final-cta::before { opacity: 0.9; transition: opacity 850ms cubic-bezier(0.25, 1, 0.5, 1); }
-.home-scene--visible.home-process::before, .home-scene--visible.home-certificate::before, .home-scene--visible.home-final-cta::before { opacity: 0; }
+.home-process::before, .home-certificate::before { position: absolute; inset: 0; z-index: 0; background: var(--mc-soft); content: ""; pointer-events: none; opacity: 0; }
+.home-certificate::before { background: var(--mc-ink); }
+.home-scene--ready.home-process::before, .home-scene--ready.home-certificate::before { opacity: 0.9; transition: opacity 850ms cubic-bezier(0.25, 1, 0.5, 1); }
+.home-scene--visible.home-process::before, .home-scene--visible.home-certificate::before { opacity: 0; }
 .home-scene--ready .inspection-stage__image img, .home-scene--ready.brand-showcase__hero .brand-showcase__hero-image { opacity: 0.18; transform: scale(1.06); transition: opacity 850ms cubic-bezier(0.25, 1, 0.5, 1), transform 1100ms cubic-bezier(0.25, 1, 0.5, 1); }
 .home-scene--visible .inspection-stage__image img, .home-scene--visible.brand-showcase__hero .brand-showcase__hero-image { opacity: 1; transform: scale(1); }
 .checkout-page { background: var(--mc-ink); color: var(--mc-ink); }
@@ -417,7 +417,7 @@ body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
 @media (pointer: coarse) { input:not([type="file"]), textarea, select { font-size: 1rem; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
 @media (prefers-reduced-motion: reduce) {
-  .home-scene--ready.home-process::before, .home-scene--ready.home-certificate::before, .home-scene--ready.home-final-cta::before, .home-scene--ready .inspection-stage__image img, .home-scene--ready.brand-showcase__hero .brand-showcase__hero-image { transition-duration: 350ms !important; transition-property: opacity; }
+  .home-scene--ready.home-process::before, .home-scene--ready.home-certificate::before, .home-scene--ready .inspection-stage__image img, .home-scene--ready.brand-showcase__hero .brand-showcase__hero-image { transition-duration: 350ms !important; transition-property: opacity; }
   .home-scene--ready .inspection-stage__image img, .home-scene--ready.brand-showcase__hero .brand-showcase__hero-image { transform: none; }
   .checkout-featured-brand:hover { transform: none; }
   .checkout-featured-brand:hover .checkout-featured-brand__image, .checkout-featured-brand:hover .checkout-featured-brand__arrow, .checkout-brand-row:hover .checkout-brand-row__arrow { transform: none; }
