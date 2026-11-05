@@ -30,7 +30,7 @@ export default async function CertificatePage({ searchParams }: { searchParams: 
             </ButtonLink>
             <p className="text-sm font-semibold text-mc-orange-dark">Private certificate access</p>
             <h1 className="mt-3 max-w-lg font-display text-4xl leading-[1.08] tracking-[-0.025em] text-mc-ink sm:text-5xl">Get your ModaCert certificate.</h1>
-            <p className="mt-4 max-w-lg text-base leading-7 text-mc-form-muted">You stay signed in across ModaCert. Enter the UUID from your confirmation email to open the certificate owned by your account.</p>
+            <p className="mt-4 max-w-lg text-base leading-7 text-mc-form-muted">You stay signed in across ModaCert. Enter the certificate ID from your confirmation email to open the certificate owned by your account.</p>
             <CertificateLookup initialUuid={initialUuid} />
           </div>
           <div className="relative min-h-[320px] overflow-hidden bg-mc-brown lg:min-h-[700px]">

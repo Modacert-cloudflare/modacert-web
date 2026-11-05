@@ -29,6 +29,7 @@ globalThis.certificateAuthJourney = async page => {
       return route.fulfill({ json: auth });
     }
     if (path === '/api/v1/brands') return route.fulfill({ json: { data: [] } });
+    if (path === '/api/v1/certificates/retrieve') return route.fulfill({ json: { success: true, data: { downloadUrl: 'https://example.com/refined.pdf', originalDownloadUrl: 'https://example.com/reference.pdf' } } });
     throw new Error(`Unexpected API request: ${path}`);
   });
 
@@ -39,7 +40,7 @@ globalThis.certificateAuthJourney = async page => {
   }
   async function expectCertificate(path) {
     await page.waitForURL(origin + path);
-    await page.getByLabel('Certificate UUID').waitFor();
+    await page.getByLabel('Certificate ID').waitFor();
     const saved = await page.evaluate(() => ({ token: localStorage.getItem('modacert_token') || sessionStorage.getItem('modacert_token'), path: sessionStorage.getItem('modacert_return_path') }));
     if (saved.token !== 'journey-test-token' || saved.path !== null) throw new Error(JSON.stringify(saved));
   }
@@ -64,10 +65,15 @@ globalThis.certificateAuthJourney = async page => {
   if (await page.evaluate(() => sessionStorage.getItem('modacert_return_path')) !== deepLink) throw new Error('Failed login lost the destination');
   await page.getByRole('button', { name: 'Sign in with Google', exact: true }).click();
   await expectCertificate(deepLink);
-  if (await page.getByLabel('Certificate UUID').inputValue() !== uuid) throw new Error('UUID lost');
+  if (await page.getByLabel('Certificate ID').inputValue() !== uuid) throw new Error('UUID lost');
   await page.reload();
-  await page.getByLabel('Certificate UUID').waitFor();
+  await page.getByLabel('Certificate ID').waitFor();
   results.push('Google failure → retry preserves UUID, hash, and session after reload');
+  await page.getByRole('button', { name: 'Get certificate' }).click();
+  const claim = page.getByRole('link', { name: 'Claim certificate' });
+  await claim.waitFor();
+  if (await claim.getAttribute('href') !== 'https://example.com/reference.pdf' || await page.getByRole('link', { name: /Version 2|Refined/ }).count()) throw new Error('Wrong certificate action');
+  results.push('Certificate lookup shows one claim action for the reference PDF');
 
   await reset(deepLink);
   await page.waitForURL(origin + '/signin');
