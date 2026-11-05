@@ -43,6 +43,7 @@ function getProxyHeaders(request: Request) {
       headers.set(key, value);
     }
   });
+  if (request.method === "GET" && new URL(request.url).pathname === "/api/v1/brands") headers.delete("authorization");
   headers.set("accept-encoding", "identity");
   return headers;
 }

@@ -75,6 +75,24 @@ test("public brand lookup does not redirect visitors to sign-in on stale auth", 
   }
 });
 
+test("public brand lookup does not send a stored bearer token", async () => {
+  const originalAdapter = axios.defaults.adapter;
+  let authorization;
+  axios.defaults.adapter = async (request) => {
+    authorization = request.headers.get("Authorization");
+    return { data: { data: [] }, status: 200, statusText: "OK", headers: {}, config: request };
+  };
+  try {
+    const config = load("config", { NEXT_PUBLIC_API_RETRY_ATTEMPTS: "1" });
+    const api = load("api", {}, { axios, "./config": config, "./auth": {} });
+    api.setAuthToken("expired-token");
+    assert.deepEqual(await api.fetchBrands(), []);
+    assert.equal(authorization, undefined);
+  } finally {
+    axios.defaults.adapter = originalAdapter;
+  }
+});
+
 test("Stripe checkout uses only Stripe endpoints", async () => {
   const originalAdapter = axios.defaults.adapter;
   let response;

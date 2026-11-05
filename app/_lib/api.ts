@@ -130,10 +130,11 @@ async function retryRequest(api: AxiosInstance, error: unknown) {
 }
 
 [userApi, paymentApi].forEach((api) => {
-  api.interceptors.request.use((config) => {
+  api.interceptors.request.use((request) => {
+    if (request.url === config.endpoints.brands.list) delete request.headers.Authorization;
     activeRequests++;
     notifyListeners();
-    return config;
+    return request;
   });
   api.interceptors.response.use(
     (res) => {
