@@ -188,7 +188,7 @@ p { text-wrap: pretty; }
   .review-section .review-track--3 { animation-duration: 28s !important; }
 }
 @keyframes review-roll { to { transform: translateY(-50%); } }
-body:has(.home-hero) .site-footer { border-top: 0; background: var(--mc-soft); }
+body:has(.home-hero) .site-footer { background: var(--mc-soft); }
 .home-hero__eyebrow { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.27em; white-space: nowrap; }
 .home-hero__eyebrow span { margin-inline: 0.55em; }
 .home-hero__title { font-size: clamp(3rem, 9vw, 5.4rem); line-height: 0.99; letter-spacing: -0.025em; text-wrap: balance; }
